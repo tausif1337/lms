@@ -1,20 +1,38 @@
 import axios from 'axios';
 
-// Create axios instance with base configuration
+// ============================================================================
+// 🚀 API CONFIGURATION
+// ============================================================================
+// This section sets up how our app talks to the backend server
+
+// Create a configured axios instance (think of it as a pre-configured messenger)
 const api = axios.create({
+  // The address where our backend server is running
   baseURL: 'http://localhost:8000/api',
+  
+  // Tell the server we're sending JSON data
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor to add auth token to requests
+// ============================================================================
+// 🔐 AUTOMATIC TOKEN MANAGEMENT
+// ============================================================================
+// These functions automatically handle authentication tokens
+
+// 🎯 REQUEST INTERCEPTOR - Adds auth token to every request
+// This runs BEFORE we send any request to the server
 api.interceptors.request.use(
   (config) => {
+    // Get the user's access token from browser storage
     const token = localStorage.getItem('access_token');
+    
+    // If we have a token, add it to the request headers
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
     return config;
   },
   (error) => {
@@ -22,32 +40,38 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle token refresh and errors
+// 🎯 RESPONSE INTERCEPTOR - Handles token refresh and errors
+// This runs AFTER we get a response from the server
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response, // If successful, just return the response
+  
   async (error) => {
     const originalRequest = error.config;
 
-    // If token is expired and we haven't tried to refresh yet
+    // If we get a 401 error (unauthorized) and haven't tried to refresh yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      originalRequest._retry = true; // Mark that we've tried to refresh
 
       try {
+        // Get the refresh token from browser storage
         const refreshToken = localStorage.getItem('refresh_token');
+        
         if (refreshToken) {
+          // Try to get a new access token using the refresh token
           const response = await axios.post('http://localhost:8000/api/token/refresh/', {
             refresh: refreshToken,
           });
 
+          // Save the new access token
           const { access } = response.data;
           localStorage.setItem('access_token', access);
           
-          // Retry the original request with new token
+          // Retry the original request with the new token
           originalRequest.headers.Authorization = `Bearer ${access}`;
           return api(originalRequest);
         }
-      } catch (refreshError) {
-        // Refresh token is also expired, redirect to login
+      } catch {
+        // If refresh fails, clear all tokens and redirect to login
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
@@ -59,87 +83,108 @@ api.interceptors.response.use(
   }
 );
 
-// Authentication API
+// ============================================================================
+// 🔐 AUTHENTICATION API FUNCTIONS
+// ============================================================================
+// These functions handle user login, registration, and token management
+
 export const authAPI = {
-  // Login user
+  // 🎯 LOGIN - Sign in with username and password
   login: async (username, password) => {
     try {
+      // Send login request to the server
       const response = await axios.post('http://localhost:8000/api/token/', {
         username,
         password,
       });
       
+      // Extract tokens from the response
       const { access, refresh } = response.data;
+      
+      // Save tokens in browser storage for future use
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       
       return { success: true, data: response.data };
     } catch (error) {
+      // If login fails, return error message
       return { 
         success: false, 
-        error: error.response?.data?.detail || 'Login failed' 
+        error: error.response?.data?.detail || 'Login failed. Please check your credentials.' 
       };
     }
   },
 
-  // Register user
+  // 🎯 REGISTER - Create a new user account
   register: async (userData) => {
     try {
+      // Send registration request to the server
       const response = await api.post('/user/auth/', userData);
       return { success: true, data: response.data };
     } catch (error) {
+      // If registration fails, return error details
       return { 
         success: false, 
-        error: error.response?.data || 'Registration failed' 
+        error: error.response?.data || 'Registration failed. Please try again.' 
       };
     }
   },
 
-  // Verify token
+  // 🎯 VERIFY TOKEN - Check if current token is still valid
   verifyToken: async () => {
     try {
+      // Get the current access token
       const token = localStorage.getItem('access_token');
       if (!token) return { success: false, error: 'No token found' };
 
+      // Ask the server if our token is still good
       const response = await axios.post('http://localhost:8000/api/token/verify/', {
         token,
       });
       return { success: true, data: response.data };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Token verification failed' };
     }
   },
 
-  // Refresh token
+  // 🎯 REFRESH TOKEN - Get a new access token using refresh token
   refreshToken: async () => {
     try {
+      // Get the refresh token
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) return { success: false, error: 'No refresh token found' };
 
+      // Ask the server for a new access token
       const response = await axios.post('http://localhost:8000/api/token/refresh/', {
         refresh: refreshToken,
       });
       
+      // Save the new access token
       const { access } = response.data;
       localStorage.setItem('access_token', access);
       
       return { success: true, data: response.data };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Token refresh failed' };
     }
   },
 
-  // Logout (clear tokens)
+  // 🎯 LOGOUT - Clear all stored tokens and user data
   logout: () => {
+    // Remove all authentication data from browser storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
   },
 };
 
-// User API
+// ============================================================================
+// 👤 USER API FUNCTIONS
+// ============================================================================
+// These functions handle user profile management
+
 export const userAPI = {
-  // Get current user or all users (admin only)
+  // 🎯 GET ALL USERS - Get list of all users (admin only)
   getUsers: async () => {
     try {
       const response = await api.get('/user/auth/');
@@ -152,11 +197,12 @@ export const userAPI = {
     }
   },
 
-  // Get current user profile
+  // 🎯 GET CURRENT USER - Get the logged-in user's profile
   getCurrentUser: async () => {
     try {
       const response = await api.get('/user/auth/');
       const users = response.data;
+      
       // Return the current user (assuming it's the first one for non-admin users)
       const currentUser = Array.isArray(users) ? users[0] : users;
       return { success: true, data: currentUser };
@@ -168,7 +214,7 @@ export const userAPI = {
     }
   },
 
-  // Update user profile
+  // 🎯 UPDATE USER - Update the current user's profile
   updateUser: async (userId, userData) => {
     try {
       const response = await api.put(`/user/auth/${userId}/`, userData);
@@ -182,9 +228,13 @@ export const userAPI = {
   },
 };
 
-// Category API
+// ============================================================================
+// 📚 CATEGORY API FUNCTIONS
+// ============================================================================
+// These functions handle course categories
+
 export const categoryAPI = {
-  // Get all categories
+  // 🎯 GET ALL CATEGORIES - Get list of all course categories
   getCategories: async () => {
     try {
       const response = await api.get('/categories/');
@@ -197,7 +247,7 @@ export const categoryAPI = {
     }
   },
 
-  // Create category (admin only)
+  // 🎯 CREATE CATEGORY - Create a new category (admin only)
   createCategory: async (categoryData) => {
     try {
       const response = await api.post('/categories/', categoryData);
@@ -210,7 +260,7 @@ export const categoryAPI = {
     }
   },
 
-  // Update category (admin only)
+  // 🎯 UPDATE CATEGORY - Update an existing category
   updateCategory: async (categoryId, categoryData) => {
     try {
       const response = await api.put(`/categories/${categoryId}/`, categoryData);
@@ -223,7 +273,7 @@ export const categoryAPI = {
     }
   },
 
-  // Delete category (admin only)
+  // 🎯 DELETE CATEGORY - Delete a category
   deleteCategory: async (categoryId) => {
     try {
       await api.delete(`/categories/${categoryId}/`);
@@ -237,9 +287,13 @@ export const categoryAPI = {
   },
 };
 
-// Course API
+// ============================================================================
+// 📖 COURSE API FUNCTIONS
+// ============================================================================
+// These functions handle course management
+
 export const courseAPI = {
-  // Get all courses (filtered by user role)
+  // 🎯 GET ALL COURSES - Get list of all courses
   getCourses: async () => {
     try {
       const response = await api.get('/courses/');
@@ -252,7 +306,7 @@ export const courseAPI = {
     }
   },
 
-  // Get single course
+  // 🎯 GET SINGLE COURSE - Get details of a specific course
   getCourse: async (courseId) => {
     try {
       const response = await api.get(`/courses/${courseId}/`);
@@ -265,7 +319,7 @@ export const courseAPI = {
     }
   },
 
-  // Create course (teacher only)
+  // 🎯 CREATE COURSE - Create a new course (teacher/admin only)
   createCourse: async (courseData) => {
     try {
       const response = await api.post('/courses/', courseData);
@@ -278,7 +332,7 @@ export const courseAPI = {
     }
   },
 
-  // Update course (teacher only)
+  // 🎯 UPDATE COURSE - Update an existing course
   updateCourse: async (courseId, courseData) => {
     try {
       const response = await api.put(`/courses/${courseId}/`, courseData);
@@ -291,7 +345,7 @@ export const courseAPI = {
     }
   },
 
-  // Delete course (teacher only)
+  // 🎯 DELETE COURSE - Delete a course
   deleteCourse: async (courseId) => {
     try {
       await api.delete(`/courses/${courseId}/`);
@@ -305,9 +359,13 @@ export const courseAPI = {
   },
 };
 
-// Lesson API
+// ============================================================================
+// 📝 LESSON API FUNCTIONS
+// ============================================================================
+// These functions handle lesson management
+
 export const lessonAPI = {
-  // Get all lessons
+  // 🎯 GET ALL LESSONS - Get list of all lessons
   getLessons: async () => {
     try {
       const response = await api.get('/lessons/');
@@ -320,20 +378,20 @@ export const lessonAPI = {
     }
   },
 
-  // Get lessons by course
-  getLessonsByCourse: async (courseId) => {
+  // 🎯 GET SINGLE LESSON - Get details of a specific lesson
+  getLesson: async (lessonId) => {
     try {
-      const response = await api.get(`/lessons/?course=${courseId}`);
+      const response = await api.get(`/lessons/${lessonId}/`);
       return { success: true, data: response.data };
     } catch (error) {
       return { 
         success: false, 
-        error: error.response?.data || 'Failed to fetch course lessons' 
+        error: error.response?.data || 'Failed to fetch lesson' 
       };
     }
   },
 
-  // Create lesson
+  // 🎯 CREATE LESSON - Create a new lesson (teacher/admin only)
   createLesson: async (lessonData) => {
     try {
       const response = await api.post('/lessons/', lessonData);
@@ -346,7 +404,7 @@ export const lessonAPI = {
     }
   },
 
-  // Update lesson
+  // 🎯 UPDATE LESSON - Update an existing lesson
   updateLesson: async (lessonId, lessonData) => {
     try {
       const response = await api.put(`/lessons/${lessonId}/`, lessonData);
@@ -359,7 +417,7 @@ export const lessonAPI = {
     }
   },
 
-  // Delete lesson
+  // 🎯 DELETE LESSON - Delete a lesson
   deleteLesson: async (lessonId) => {
     try {
       await api.delete(`/lessons/${lessonId}/`);
@@ -373,229 +431,18 @@ export const lessonAPI = {
   },
 };
 
-// Material API
-export const materialAPI = {
-  // Get all materials
-  getMaterials: async () => {
-    try {
-      const response = await api.get('/materials/');
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch materials' 
-      };
-    }
-  },
+// ============================================================================
+// 📁 FILE UPLOAD UTILITY
+// ============================================================================
+// This function handles file uploads to the server
 
-  // Get materials by lesson
-  getMaterialsByLesson: async (lessonId) => {
-    try {
-      const response = await api.get(`/materials/?lesson=${lessonId}`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch lesson materials' 
-      };
-    }
-  },
-
-  // Create material
-  createMaterial: async (materialData) => {
-    try {
-      const response = await api.post('/materials/', materialData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to create material' 
-      };
-    }
-  },
-
-  // Update material
-  updateMaterial: async (materialId, materialData) => {
-    try {
-      const response = await api.put(`/materials/${materialId}/`, materialData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to update material' 
-      };
-    }
-  },
-
-  // Delete material
-  deleteMaterial: async (materialId) => {
-    try {
-      await api.delete(`/materials/${materialId}/`);
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to delete material' 
-      };
-    }
-  },
-};
-
-// Enrollment API
-export const enrollmentAPI = {
-  // Get all enrollments
-  getEnrollments: async () => {
-    try {
-      const response = await api.get('/enrollments/');
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch enrollments' 
-      };
-    }
-  },
-
-  // Get enrollments by user
-  getUserEnrollments: async (userId) => {
-    try {
-      const response = await api.get(`/enrollments/?student=${userId}`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch user enrollments' 
-      };
-    }
-  },
-
-  // Get enrollments by course
-  getCourseEnrollments: async (courseId) => {
-    try {
-      const response = await api.get(`/enrollments/?course=${courseId}`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch course enrollments' 
-      };
-    }
-  },
-
-  // Create enrollment
-  createEnrollment: async (enrollmentData) => {
-    try {
-      const response = await api.post('/enrollments/', enrollmentData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to create enrollment' 
-      };
-    }
-  },
-
-  // Update enrollment
-  updateEnrollment: async (enrollmentId, enrollmentData) => {
-    try {
-      const response = await api.put(`/enrollments/${enrollmentId}/`, enrollmentData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to update enrollment' 
-      };
-    }
-  },
-
-  // Delete enrollment
-  deleteEnrollment: async (enrollmentId) => {
-    try {
-      await api.delete(`/enrollments/${enrollmentId}/`);
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to delete enrollment' 
-      };
-    }
-  },
-};
-
-// Question/Answer API
-export const questionAnswerAPI = {
-  // Get all questions
-  getQuestions: async () => {
-    try {
-      const response = await api.get('/questions/');
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch questions' 
-      };
-    }
-  },
-
-  // Get questions by course
-  getQuestionsByCourse: async (courseId) => {
-    try {
-      const response = await api.get(`/questions/?course=${courseId}`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to fetch course questions' 
-      };
-    }
-  },
-
-  // Create question
-  createQuestion: async (questionData) => {
-    try {
-      const response = await api.post('/questions/', questionData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to create question' 
-      };
-    }
-  },
-
-  // Update question
-  updateQuestion: async (questionId, questionData) => {
-    try {
-      const response = await api.put(`/questions/${questionId}/`, questionData);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to update question' 
-      };
-    }
-  },
-
-  // Delete question
-  deleteQuestion: async (questionId) => {
-    try {
-      await api.delete(`/questions/${questionId}/`);
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data || 'Failed to delete question' 
-      };
-    }
-  },
-};
-
-// File upload helper
 export const uploadFile = async (file, endpoint) => {
   try {
+    // Create form data for file upload
     const formData = new FormData();
     formData.append('file', file);
 
+    // Send file to the server
     const response = await api.post(endpoint, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -611,5 +458,16 @@ export const uploadFile = async (file, endpoint) => {
   }
 };
 
-// Export the main api instance for custom requests
-export default api; 
+// ============================================================================
+// 📋 EXPORT ALL API FUNCTIONS
+// ============================================================================
+// This makes all our API functions available to other parts of the app
+
+export default {
+  authAPI,
+  userAPI,
+  categoryAPI,
+  courseAPI,
+  lessonAPI,
+  uploadFile,
+}; 
