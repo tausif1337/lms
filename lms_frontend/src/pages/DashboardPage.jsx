@@ -1,114 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import ProfilePage from "./ProfilePage";
-import Avatar from "../components/Avatar";
+import UsersPage from "./UsersPage";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
 
 function DashboardPage({ children }) {
-  const { logout } = useAuth();
-  // Replace with real user/profile fetch if needed
-  const user = { username: "User", role: "student", email: "user@email.com" };
+  const { logout, token } = useAuth();
+  const [user, setUser] = useState({ username: "User", role: "student", email: "user@email.com" });
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
+  const [currentPage, setCurrentPage] = useState("dashboard");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Fetch user data to determine if admin
+    if (token) {
+      fetch("http://localhost:8000/api/user/profile/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("DashboardPage - User profile data:", data);
+          setUser(data);
+          setIsAdmin(data.role === "admin");
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+  }, [token]);
 
   const navItems = [
     {
       label: "Dashboard",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" /></svg>
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
+        </svg>
       ),
-      onClick: () => setShowProfile(false),
-      active: !showProfile,
+      onClick: () => {
+        setCurrentPage("dashboard");
+        setShowProfile(false);
+      },
+      active: currentPage === "dashboard" && !showProfile,
     },
-    {
-      label: "Profile",
+    // Only show Users page for admins
+    ...(isAdmin ? [{
+      label: "Users",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
       ),
-      onClick: () => setShowProfile(true),
-      active: showProfile,
-    },
+      onClick: () => {
+        setCurrentPage("users");
+        setShowProfile(false);
+      },
+      active: currentPage === "users",
+    }] : []),
   ];
 
-  return (
-    <div className="min-h-screen w-full flex bg-gradient-to-br from-blue-50 via-white to-green-50">
-      {/* Sidebar */}
-      <aside className={`flex flex-col py-6 px-2 transition-all duration-300 bg-white shadow-lg h-full ${sidebarOpen ? 'w-56' : 'w-16'} rounded-r-3xl relative`}>
-        {/* Logo/title */}
-        <div className="flex items-center gap-2 mb-10 px-2">
-          <span className="text-blue-600 font-extrabold text-xl tracking-tight">{sidebarOpen ? 'LMS App' : 'L'}</span>
-        </div>
-        <button
-          className="mb-8 flex items-center justify-center rounded-lg hover:bg-blue-50 transition h-10 w-10 self-end"
-          onClick={() => setSidebarOpen((v) => !v)}
-          title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-        >
-          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <nav className="flex-1 flex flex-col gap-2 mt-2">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              className={`flex items-center gap-3 py-2 px-3 rounded-xl transition text-left font-medium group ${item.active ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700'} ${sidebarOpen ? '' : 'justify-center px-2'}`}
-              onClick={item.onClick}
-            >
-              <span>{item.icon}</span>
-              {sidebarOpen && <span className="ml-1">{item.label}</span>}
-            </button>
-          ))}
-        </nav>
-        {/* Logout at bottom */}
-        <button
-          className={`absolute bottom-6 left-2 right-2 flex items-center gap-3 py-2 px-3 rounded-xl transition text-left font-medium group text-red-500 hover:bg-red-50 ${sidebarOpen ? '' : 'justify-center px-2'}`}
-          onClick={logout}
-        >
-          <span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" /></svg>
-          </span>
-          {sidebarOpen && <span className="ml-1">Logout</span>}
-        </button>
-      </aside>
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Topbar */}
-        <header className="flex items-center justify-between px-8 py-4 bg-white shadow border-b border-gray-100">
-          <div className="font-bold text-xl text-blue-700 tracking-tight">Dashboard</div>
-          <div className="relative">
-            <button className="flex items-center gap-2 focus:outline-none rounded-full hover:bg-blue-50 px-2 py-1 transition" onClick={() => setShowProfile((v) => !v)}>
-              <Avatar name={user.username} />
-              <span className="hidden sm:block font-semibold text-gray-700">{user.username}</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-            {showProfile && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-10 animate-fade-in">
-                <div className="p-4 border-b border-gray-100">
-                  <div className="font-semibold text-gray-700">{user.username}</div>
-                  <div className="text-xs text-gray-400">{user.email}</div>
-                  <div className="text-xs text-blue-500 capitalize mt-1">{user.role}</div>
-                </div>
-                <button className="w-full text-left px-4 py-2 hover:bg-blue-50 transition" onClick={() => setShowProfile(true)}>Profile</button>
-                <button className="w-full text-left px-4 py-2 hover:bg-blue-50 transition text-red-500" onClick={logout}>Logout</button>
+  const renderContent = () => {
+    switch (currentPage) {
+      case "profile":
+        return <ProfilePage />;
+      case "users":
+        return <UsersPage />;
+      case "dashboard":
+      default:
+        return children || (
+          <div className="w-full text-center">
+            <h2 className="text-3xl font-bold text-blue-600 mb-4">Welcome to your Dashboard!</h2>
+            <p className="text-gray-500 text-lg mb-6">Use the sidebar to navigate your LMS features.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Quick Stats</h3>
+                <p className="text-gray-600 text-sm">View your learning progress and achievements.</p>
               </div>
-            )}
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Recent Courses</h3>
+                <p className="text-gray-600 text-sm">Continue where you left off in your courses.</p>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Notifications</h3>
+                <p className="text-gray-600 text-sm">Stay updated with important announcements.</p>
+              </div>
+            </div>
           </div>
-        </header>
-        {/* Main content */}
-        <main className="flex-1 p-6 bg-transparent overflow-auto">
-          {showProfile ? (
-            <ProfilePage />
-          ) : (
-            children || (
-              <div className="flex flex-col items-center justify-center h-full w-full">
-                <h2 className="text-3xl font-bold text-blue-600 mb-2">Welcome to your Dashboard!</h2>
-                <p className="text-gray-500 text-lg mb-2">Use the sidebar to navigate your LMS features.</p>
-              </div>
-            )
-          )}
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-green-50 flex">
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        navItems={navItems}
+      />
+      <div className="flex-1 flex flex-col min-h-screen">
+        <Topbar
+          user={user}
+          showProfile={showProfile}
+          setShowProfile={setShowProfile}
+          logout={logout}
+          setCurrentPage={setCurrentPage}
+        />
+        <main className="flex-1 p-6 sm:p-8 bg-transparent overflow-auto w-full flex justify-center">
+          <div className="w-full max-w-6xl">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>
   );
 }
 
-export default DashboardPage; 
+export default DashboardPage;

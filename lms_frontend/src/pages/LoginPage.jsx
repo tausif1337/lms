@@ -5,7 +5,7 @@ function LoginPage() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const { login, goTo } = useAuth();
 
   const handleChange = (e) => {
     setFormData({
@@ -72,8 +72,13 @@ function LoginPage() {
         </div>
         <button className="bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition shadow" type="submit">Login</button>
       </form>
-      <div className="flex justify-between mt-3 text-sm">
-        <a href="#" className="text-blue-400 hover:underline">Forgot password?</a>
+      <div className="flex justify-center mt-3 text-sm">
+        <button 
+          onClick={() => goTo("forgot-password")} 
+          className="text-blue-400 hover:text-blue-600 hover:underline transition"
+        >
+          Forgot password?
+        </button>
       </div>
       {message && <div className="mt-3 text-center text-sm text-red-500">{message}</div>}
     </div>
