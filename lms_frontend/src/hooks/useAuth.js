@@ -7,4 +7,4 @@ import { AuthContext } from "../components/AuthContext";
 export function useAuth() {
   // Return the current context value for AuthContext
   return useContext(AuthContext);
-} 
+}

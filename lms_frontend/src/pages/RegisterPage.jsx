@@ -9,6 +9,7 @@ function RegisterPage() {
     confirmPassword: "",
     role: ""
   });
+  
   const [message, setMessage] = useState("");
   const { register, goTo } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
