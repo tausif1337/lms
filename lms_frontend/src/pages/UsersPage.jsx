@@ -3,23 +3,6 @@ import axios from "axios";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "../components/Avatar";
 
-// Simple Modal component
-function Modal({ children, onClose }) {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-all">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 min-w-[320px] relative animate-fadeIn">
-        <button
-          className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl font-bold focus:outline-none"
-          onClick={onClose}
-          aria-label="Close"
-        >
-          &times;
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 function UsersPage() {
   const { token } = useAuth();

@@ -4,6 +4,7 @@ import ProfilePage from "./ProfilePage";
 import UsersPage from "./UsersPage";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import axios from "axios";
 
 function DashboardPage({ children }) {
   const { logout, token } = useAuth();
@@ -16,11 +17,11 @@ function DashboardPage({ children }) {
   useEffect(() => {
     // Fetch user data to determine if admin
     if (token) {
-      fetch("http://localhost:8000/api/user/profile/", {
+      axios.get("http://localhost:8000/api/user/profile/", {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) => res.json())
-        .then((data) => {
+        .then((res) => {
+          const data = res.data;
           console.log("DashboardPage - User profile data:", data);
           setUser(data);
           setIsAdmin(data.role === "admin");
