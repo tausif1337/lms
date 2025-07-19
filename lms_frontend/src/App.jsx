@@ -1,6 +1,5 @@
 import React from "react";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import DashboardPage from "./pages/DashboardPage";
 import { useAuth } from "./hooks/useAuth";
@@ -18,18 +17,7 @@ function AppContent() {
             {page === "login" ? (
               <>
                 <LoginPage />
-                <div className="mt-6 flex gap-2 justify-center">
-                  <span className="text-gray-500">New here?</span>
-                  <button onClick={() => goTo("register")} className="text-blue-600 font-semibold hover:underline transition">Register</button>
-                </div>
-              </>
-            ) : page === "register" ? (
-              <>
-                <RegisterPage />
-                <div className="mt-6 flex gap-2 justify-center">
-                  <span className="text-gray-500">Already have an account?</span>
-                  <button onClick={() => goTo("login")} className="text-blue-600 font-semibold hover:underline transition">Back to Login</button>
-                </div>
+                
               </>
             ) : page === "forgot-password" ? (
               <>

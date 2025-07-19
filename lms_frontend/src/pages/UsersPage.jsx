@@ -3,7 +3,6 @@ import axios from "axios";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "../components/Avatar";
 
-
 function UsersPage() {
   const { token } = useAuth();
   const [users, setUsers] = useState([]);
@@ -12,12 +11,13 @@ function UsersPage() {
 
   useEffect(() => {
     // First check if user is admin using the profile endpoint
-    axios.get("http://localhost:8000/api/user/profile/", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    axios
+      .get("http://localhost:8000/api/user/profile/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(({ data }) => {
         console.log("UsersPage - Current user data:", data);
-        if (data.role === 'admin') {
+        if (data.role === "admin") {
           setIsAdmin(true);
           // If admin, fetch all users
           return axios.get("http://localhost:8000/api/user/auth/", {
@@ -50,7 +50,9 @@ function UsersPage() {
     return (
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
         <h2 className="text-2xl font-bold mb-4 text-red-600">Access Denied</h2>
-        <p className="text-gray-600">You don't have permission to view this page.</p>
+        <p className="text-gray-600">
+          You don't have permission to view this page.
+        </p>
       </div>
     );
   }
@@ -70,9 +72,16 @@ function UsersPage() {
           </thead>
           <tbody>
             {users.map((user, idx) => (
-              <tr key={user.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                <td className="border px-4 py-2"><Avatar name={user.username} /></td>
-                <td className="border px-4 py-2 font-semibold">{user.username}</td>
+              <tr
+                key={user.id}
+                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+              >
+                <td className="border px-4 py-2">
+                  <Avatar name={user.username} />
+                </td>
+                <td className="border px-4 py-2 font-semibold">
+                  {user.username}
+                </td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2 capitalize">{user.role}</td>
               </tr>
@@ -84,4 +93,4 @@ function UsersPage() {
   );
 }
 
-export default UsersPage; 
+export default UsersPage;
