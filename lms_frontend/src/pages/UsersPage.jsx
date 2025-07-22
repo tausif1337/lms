@@ -7,44 +7,37 @@ function UsersPage() {
   const { token } = useAuth();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // First check if user is admin using the profile endpoint
-    axios
-      .get("http://localhost:8000/api/user/profile/", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(({ data }) => {
+    const fetchUsers = async () => {
+      try {
+        // First check if user is admin using the profile endpoint
+        const profileRes = await axios.get("http://localhost:8000/api/user/profile/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = profileRes.data;
         console.log("UsersPage - Current user data:", data);
         if (data.role === "admin") {
           setIsAdmin(true);
           // If admin, fetch all users
-          return axios.get("http://localhost:8000/api/user/auth/", {
+          const usersRes = await axios.get("http://localhost:8000/api/user/auth/", {
             headers: { Authorization: `Bearer ${token}` },
           });
+          const usersData = usersRes.data;
+          console.log("UsersPage - All users data:", usersData);
+          if (Array.isArray(usersData)) {
+            setUsers(usersData);
+          }
         } else {
           setIsAdmin(false);
-          setLoading(false);
           throw new Error("Access denied");
         }
-      })
-      .then(({ data }) => {
-        console.log("UsersPage - All users data:", data);
-        if (Array.isArray(data)) {
-          setUsers(data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error:", error);
-        setLoading(false);
-      });
+      }
+    };
+    fetchUsers();
   }, [token]);
-
-  if (loading) {
-    return <div className="text-center text-gray-500">Loading...</div>;
-  }
 
   if (!isAdmin) {
     return (
