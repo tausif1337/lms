@@ -66,7 +66,7 @@ function UsersPage() {
         <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead className="bg-blue-50">
             <tr>
-              <th className="border px-4 py-2 text-left">Profile Picture</th>
+              <th className="border px-4 py-2 text-center">Profile Picture</th>
               <th className="border px-4 py-2 text-left">Username</th>
               <th className="border px-4 py-2 text-left">Email Address</th>
               <th className="border px-4 py-2 text-left">User Role</th>
