@@ -7,7 +7,7 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import axios from "axios";
 
-function DashboardPage({ children }) {
+function DashboardPage() {
   const { logout, token } = useAuth();
   const [user, setUser] = useState({
     username: "User",
@@ -123,12 +123,6 @@ function DashboardPage({ children }) {
   ];
 
   const renderContent = () => {
-    // Redirect non-admin users away from admin-only pages
-    if ((currentPage === "users" || currentPage === "register") && !isAdmin) {
-      setCurrentPage("dashboard");
-      return null;
-    }
-
     switch (currentPage) {
       case "profile":
         return <ProfilePage />;
@@ -139,43 +133,41 @@ function DashboardPage({ children }) {
       case "dashboard":
       default:
         return (
-          children || (
-            <div className="w-full text-center">
-              <h2 className="text-3xl font-bold text-blue-600 mb-4">
-                Welcome to your Dashboard!
-              </h2>
-              <p className="text-gray-500 text-lg mb-6">
-                Use the sidebar to navigate your LMS features.
-              </p>
+          <div className="w-full text-center">
+            <h2 className="text-3xl font-bold text-blue-600 mb-4">
+              Welcome to your Dashboard!
+            </h2>
+            <p className="text-gray-500 text-lg mb-6">
+              Use the sidebar to navigate your LMS features.
+            </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    Quick Stats
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    View your learning progress and achievements.
-                  </p>
-                </div>
-                <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    Recent Courses
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Continue where you left off in your courses.
-                  </p>
-                </div>
-                <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    Notifications
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Stay updated with important announcements.
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Quick Stats
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  View your learning progress and achievements.
+                </p>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Recent Courses
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Continue where you left off in your courses.
+                </p>
+              </div>
+              <div className="bg-white p-5 rounded-xl shadow border border-gray-100 hover:shadow-md transition-all">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Notifications
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Stay updated with important announcements.
+                </p>
               </div>
             </div>
-          )
+          </div>
         );
     }
   };
