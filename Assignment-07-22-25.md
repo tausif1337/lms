@@ -1,5 +1,7 @@
 # Assignment: Category & Course CRUD Application
 
+**Deadline:** 2025-07-27 11:59 PM
+
 ## Objective
 Build a simple Learning Management System (LMS) feature that allows users to **Create, Read, Update, and Delete (CRUD)** both **Categories** and **Courses**. This assignment will help you practice full-stack development using Django (backend) and React (frontend).
 
