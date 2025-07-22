@@ -4,72 +4,82 @@ import { useAuth } from "../hooks/useAuth";
 import Avatar from "../components/Avatar";
 
 function UsersPage() {
+  // Get the user's authentication token from context
   const { token } = useAuth();
-  const [users, setUsers] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Store the list of all users
+  const [allUsers, setAllUsers] = useState([]);
+  // Track if the current user is an admin
+  const [isCurrentUserAdmin, setIsCurrentUserAdmin] = useState(false);
 
+  // useEffect runs when the component loads or when the token changes
   useEffect(() => {
-    const fetchUsers = async () => {
+    // This function checks if the user is an admin and fetches all users if so
+    const checkAdminAndFetchUsers = async () => {
       try {
-        // First check if user is admin using the profile endpoint
-        const profileRes = await axios.get("http://localhost:8000/api/user/profile/", {
+        // Get the current user's profile to check their role
+        const profileResponse = await axios.get("http://localhost:8000/api/user/profile/", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = profileRes.data;
-        console.log("UsersPage - Current user data:", data);
-        if (data.role === "admin") {
-          setIsAdmin(true);
-          // If admin, fetch all users
-          const usersRes = await axios.get("http://localhost:8000/api/user/auth/", {
+        const currentUserData = profileResponse.data;
+        // Show the user data in the console for learning purposes
+        console.log("Current user profile:", currentUserData);
+        if (currentUserData.role === "admin") {
+          setIsCurrentUserAdmin(true);
+          // If the user is an admin, get the list of all users
+          const usersResponse = await axios.get("http://localhost:8000/api/user/auth/", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          const usersData = usersRes.data;
-          console.log("UsersPage - All users data:", usersData);
-          if (Array.isArray(usersData)) {
-            setUsers(usersData);
+          const usersList = usersResponse.data;
+          console.log("All users:", usersList);
+          if (Array.isArray(usersList)) {
+            setAllUsers(usersList);
           }
         } else {
-          setIsAdmin(false);
-          throw new Error("Access denied");
+          setIsCurrentUserAdmin(false);
+          throw new Error("You are not an admin");
         }
       } catch (error) {
-        console.error("Error:", error);
+        // Show errors in the console for debugging
+        console.error("There was a problem:", error);
       }
     };
-    fetchUsers();
+    checkAdminAndFetchUsers();
   }, [token]);
 
-  if (!isAdmin) {
+  // If the user is not an admin, show an access denied message
+  if (!isCurrentUserAdmin) {
     return (
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
-        <h2 className="text-2xl font-bold mb-4 text-red-600">Access Denied</h2>
+        <h2 className="text-2xl font-bold mb-4 text-red-600">Sorry, You Can't View This Page</h2>
         <p className="text-gray-600">
-          You don't have permission to view this page.
+          Only admin users can see the list of all users. If you think this is a mistake, please contact your administrator.
         </p>
       </div>
     );
   }
 
+  // If the user is an admin, show the table of all users
   return (
     <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-6xl text-center">
-      <h2 className="text-2xl font-bold mb-6 text-green-600">All Users</h2>
+      <h2 className="text-2xl font-bold mb-6 text-green-600">List of All Users</h2>
       <div className="overflow-x-auto rounded-lg">
         <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead className="bg-blue-50">
             <tr>
-              <th className="border px-4 py-2 text-left">Avatar</th>
+              <th className="border px-4 py-2 text-left">Profile Picture</th>
               <th className="border px-4 py-2 text-left">Username</th>
-              <th className="border px-4 py-2 text-left">Email</th>
-              <th className="border px-4 py-2 text-left">Role</th>
+              <th className="border px-4 py-2 text-left">Email Address</th>
+              <th className="border px-4 py-2 text-left">User Role</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, idx) => (
+            {allUsers.map((user, index) => (
               <tr
                 key={user.id}
-                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
                 <td className="border px-4 py-2">
+                  {/* Show the user's avatar using their username */}
                   <Avatar name={user.username} />
                 </td>
                 <td className="border px-4 py-2 font-semibold">
