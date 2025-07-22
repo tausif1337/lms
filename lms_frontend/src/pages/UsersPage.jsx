@@ -73,18 +73,10 @@ function UsersPage() {
             </tr>
           </thead>
           <tbody>
-            {allUsers.map((user, index) => (
-              <tr
-                key={user.id}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="border px-4 py-2">
-                  {/* Show the user's avatar using their username */}
-                  <Avatar name={user.username} />
-                </td>
-                <td className="border px-4 py-2 font-semibold">
-                  {user.username}
-                </td>
+            {allUsers.map((user) => (
+              <tr key={user.id}>
+                <td className="border px-4 py-2"><Avatar name={user.username} /></td>
+                <td className="border px-4 py-2 font-semibold">{user.username}</td>
                 <td className="border px-4 py-2">{user.email}</td>
                 <td className="border px-4 py-2 capitalize">{user.role}</td>
               </tr>
