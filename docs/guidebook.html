@@ -1,0 +1,3497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LMS — The Complete Guidebook</title>
+<style>
+@page {
+  size: A4;
+  margin: 22mm 18mm 20mm 18mm;
+  @top-left  { content: string(parttitle); font-size: 7.5pt; color: #8a8f98; letter-spacing: .06em; text-transform: uppercase; }
+  @top-right { content: string(chapter);   font-size: 7.5pt; color: #8a8f98; }
+  @bottom-center { content: counter(page); font-size: 8.5pt; color: #8a8f98; }
+}
+@page cover { margin: 0; @top-left{content:none} @top-right{content:none} @bottom-center{content:none} }
+@page partpage { @top-left{content:none} @top-right{content:none} }
+@page :blank { @top-left{content:none} @top-right{content:none} @bottom-center{content:none} }
+
+html { font-family: Charter, Georgia, "Times New Roman", serif; font-size: 10.2pt; line-height: 1.52; color: #1c1f24; }
+body { margin: 0; hyphens: auto; }
+
+/* ---------- cover ---------- */
+.cover { page: cover; position: relative; height: 297mm; box-sizing: border-box;
+         padding: 38mm 24mm 20mm 24mm;
+         background: linear-gradient(160deg,#1e1b4b 0%, #312e81 45%, #4338ca 100%); color: #fff; }
+.cover h1, .cover h2 { page-break-before: avoid; string-set: none; bookmark-level: none; }
+.cover .kicker { font-family: Menlo, monospace; font-size: 9pt; letter-spacing: .22em; text-transform: uppercase; color: #c7d2fe; }
+.cover h1 { font-size: 42pt; line-height: 1.05; margin: 8mm 0 0 0; font-weight: 600; letter-spacing: -0.02em; }
+.cover h2 { font-size: 15pt; font-weight: 400; color: #ddd6fe; margin: 5mm 0 0 0; }
+.cover .rule { width: 34mm; height: 3px; background: #a5b4fc; margin: 9mm 0; }
+.cover .blurb { font-size: 11pt; color: #e0e7ff; max-width: 120mm; }
+.cover .meta { position: absolute; bottom: 22mm; left: 24mm; right: 24mm; font-family: Menlo, monospace;
+               font-size: 8.5pt; color: #c7d2fe; border-top: 1px solid rgba(255,255,255,.25); padding-top: 4mm; }
+.cover .meta span { display: inline-block; margin-right: 10mm; }
+
+/* ---------- structure ---------- */
+.part { page: partpage; page-break-before: always; padding-top: 60mm;
+        font-size: 30pt; font-weight: 600; letter-spacing: -0.02em; color: #312e81;
+        border-bottom: 3px solid #312e81; padding-bottom: 5mm; bookmark-level: 1; }
+.part .ptitle { string-set: parttitle content(); }
+.part .pnum { display: block; font-family: Menlo, monospace; font-size: 10pt; letter-spacing: .2em;
+              color: #6366f1; text-transform: uppercase; margin-bottom: 4mm; }
+.part + .partlede { color: #4b5563; font-size: 11pt; margin-top: 4mm; }
+
+h1 { page-break-before: always; string-set: chapter content(); font-size: 19pt; font-weight: 600;
+     letter-spacing: -0.01em; margin: 0 0 4mm 0; color: #111827; bookmark-level: 2; }
+h1.cont { page-break-before: auto; }
+h2 { font-size: 13pt; font-weight: 600; margin: 7mm 0 2mm 0; color: #1f2937; bookmark-level: 3;
+     page-break-after: avoid; }
+h3 { font-size: 10.8pt; font-weight: 600; margin: 5mm 0 1.5mm 0; color: #374151; bookmark-level: 4;
+     page-break-after: avoid; }
+p { margin: 0 0 2.6mm 0; text-align: justify; }
+ul, ol { margin: 0 0 3mm 0; padding-left: 6mm; }
+li { margin-bottom: 1.2mm; }
+a { color: #4338ca; text-decoration: none; }
+strong { font-weight: 600; }
+
+/* ---------- code ---------- */
+code { font-family: Menlo, "DejaVu Sans Mono", monospace; font-size: 8.4pt; background: #f3f4f6;
+       padding: 0.4mm 1mm; border-radius: 2px; color: #0f172a; }
+pre { font-family: Menlo, "DejaVu Sans Mono", monospace; font-size: 8pt; line-height: 1.45;
+      background: #0f172a; color: #e2e8f0; padding: 3.5mm 4mm; border-radius: 3px;
+      white-space: pre-wrap; word-wrap: break-word; margin: 2.5mm 0 3.5mm 0;
+      page-break-inside: avoid; }
+pre code { background: none; color: inherit; padding: 0; font-size: 8pt; }
+pre.sh { background: #111827; }
+pre.sh::before { content: "shell"; }
+pre::before { display: block; font-size: 6.5pt; letter-spacing: .18em; text-transform: uppercase;
+              color: #64748b; margin-bottom: 2mm; }
+pre.py::before  { content: "python"; }
+pre.js::before  { content: "javascript"; }
+pre.jsx::before { content: "jsx"; }
+pre.json::before{ content: "json"; }
+pre.http::before{ content: "http"; }
+pre.sql::before { content: "sql"; }
+pre.txt::before { content: none; }
+pre.txt { background: #f8fafc; color: #1f2937; border: 1px solid #e2e8f0; }
+
+/* ---------- tables ---------- */
+table { width: 100%; border-collapse: collapse; margin: 2.5mm 0 4mm 0; font-size: 8.6pt;
+        page-break-inside: avoid; }
+th { text-align: left; background: #eef2ff; color: #312e81; font-weight: 600; padding: 1.6mm 2mm;
+     border-bottom: 1.5px solid #c7d2fe; font-size: 8.2pt; }
+td { padding: 1.5mm 2mm; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+td code, th code { font-size: 7.8pt; }
+tr:nth-child(even) td { background: #fafafa; }
+table.tight td, table.tight th { padding: 1.1mm 1.6mm; font-size: 8pt; }
+.center { text-align: center; }
+
+/* ---------- callouts ---------- */
+.note, .warn, .tip, .gap {
+  border-left: 3px solid; padding: 2.5mm 3mm; margin: 3mm 0; font-size: 9.2pt;
+  page-break-inside: avoid; border-radius: 0 3px 3px 0;
+}
+.note { border-color: #6366f1; background: #eef2ff; }
+.warn { border-color: #dc2626; background: #fef2f2; }
+.tip  { border-color: #059669; background: #ecfdf5; }
+.gap  { border-color: #d97706; background: #fffbeb; }
+.note::before, .warn::before, .tip::before, .gap::before {
+  display: block; font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase;
+  font-weight: 700; margin-bottom: 1.2mm; font-family: Menlo, monospace;
+}
+.note::before { content: "Note";    color: #4338ca; }
+.warn::before { content: "Warning"; color: #b91c1c; }
+.tip::before  { content: "Tip";     color: #047857; }
+.gap::before  { content: "Rough edge"; color: #b45309; }
+.note p:last-child, .warn p:last-child, .tip p:last-child, .gap p:last-child { margin-bottom: 0; }
+
+/* ---------- figures ---------- */
+figure { margin: 4mm 0; page-break-inside: avoid; text-align: center; }
+figure img { max-width: 100%; border: 1px solid #d1d5db; border-radius: 3px; }
+figcaption { font-size: 8pt; color: #6b7280; margin-top: 1.5mm; font-style: italic; }
+.twoup { display: flex; gap: 4mm; justify-content: center; }
+.twoup img { max-width: 46%; }
+
+/* ---------- toc ---------- */
+.toc { page-break-before: always; }
+.toc h1 { page-break-before: avoid; bookmark-level: none; }
+.toc ol { list-style: none; padding-left: 0; margin: 0; }
+.toc li { margin: 0; }
+.toc .p  { font-weight: 600; color: #312e81; margin-top: 4mm; font-size: 10.5pt;
+           border-bottom: 1px solid #e0e7ff; padding-bottom: 1mm; }
+.toc .c  { padding-left: 4mm; font-size: 9.4pt; }
+.toc .s  { padding-left: 10mm; font-size: 8.6pt; color: #4b5563; }
+.toc a { color: inherit; text-decoration: none; }
+.toc a::after { content: target-counter(attr(href), page); float: right;
+                font-family: Menlo, monospace; font-size: 8pt; color: #6b7280; }
+.toc .p a::after { color: #4338ca; }
+
+/* ---------- misc ---------- */
+.lead { font-size: 11pt; color: #4b5563; margin-bottom: 5mm; }
+.filepath { font-family: Menlo, monospace; font-size: 8.6pt; color: #4338ca;
+            background: #eef2ff; padding: 1mm 2mm; border-radius: 2px; display: inline-block; }
+.kv { font-family: Menlo, monospace; font-size: 8.4pt; }
+.small { font-size: 8.6pt; color: #6b7280; }
+.ascii { font-family: Menlo, monospace; font-size: 7.2pt; line-height: 1.35; background: #f8fafc;
+         border: 1px solid #e2e8f0; padding: 3mm; white-space: pre; overflow: hidden;
+         page-break-inside: avoid; border-radius: 3px; }
+.badge { display: inline-block; font-family: Menlo, monospace; font-size: 7.2pt; padding: 0.6mm 1.6mm;
+         border-radius: 2px; background: #e0e7ff; color: #3730a3; }
+.yes { color: #047857; font-weight: 700; }
+.no  { color: #b91c1c; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="kicker">Project Guidebook &nbsp;·&nbsp; Edition 1</div>
+  <h1>LMS</h1>
+  <h2>A Learning Management System in Django REST Framework and React</h2>
+  <div class="rule"></div>
+  <p class="blurb">Everything about everything: the setup, every file in the codebase,
+  every rule the server enforces, every screen the browser draws, and the reasons
+  behind the decisions in both halves.</p>
+  <div class="meta">
+    <span>Django 5.2 · DRF 3.15 · SimpleJWT 5.4</span>
+    <span>React 19 · Vite 8 · Tailwind 4</span>
+    <span>MySQL / MariaDB</span><br><br>
+    <span>Repository: Ostad Projects/lms</span>
+    <span>Branch: main</span>
+    <span>Generated 7 September 2026</span>
+  </div>
+</section>
+
+<section class="toc">
+<h1 id="toc" style="page-break-before:avoid">Contents</h1>
+<ol>
+  <li class="p"><a href="#part1">Part I — Orientation</a></li>
+  <li class="c"><a href="#ch1">1. What this project is</a></li>
+  <li class="c"><a href="#ch2">2. The stack, exactly</a></li>
+  <li class="c"><a href="#ch3">3. The map of the repository</a></li>
+  <li class="c"><a href="#ch4">4. One request, end to end</a></li>
+
+  <li class="p"><a href="#part2">Part II — Getting it running</a></li>
+  <li class="c"><a href="#ch5">5. Prerequisites</a></li>
+  <li class="c"><a href="#ch6">6. Step 1 — The database</a></li>
+  <li class="c"><a href="#ch7">7. Step 2 — The backend</a></li>
+  <li class="c"><a href="#ch8">8. Step 3 — Seeding data</a></li>
+  <li class="c"><a href="#ch9">9. Step 4 — The frontend</a></li>
+  <li class="c"><a href="#ch10">10. Step 5 — Signing in</a></li>
+  <li class="c"><a href="#ch11">11. Step 6 — Proving it works</a></li>
+  <li class="c"><a href="#ch12">12. Every environment variable</a></li>
+
+  <li class="p"><a href="#part3">Part III — The backend, file by file</a></li>
+  <li class="c"><a href="#ch13">13. <code>lms/</code> — the project package</a></li>
+  <li class="s"><a href="#ch13">13.4 <code>settings.py</code>, setting by setting</a></li>
+  <li class="c"><a href="#ch14">14. <code>models.py</code> — nine tables</a></li>
+  <li class="c"><a href="#ch15">15. <code>serializers.py</code></a></li>
+  <li class="c"><a href="#ch16">16. <code>permissions.py</code> — the security rules</a></li>
+  <li class="c"><a href="#ch17">17. <code>filters.py</code></a></li>
+  <li class="c"><a href="#ch18">18. <code>pagination.py</code></a></li>
+  <li class="c"><a href="#ch19">19. <code>views.py</code></a></li>
+  <li class="c"><a href="#ch20">20. <code>urls.py</code> — the route table</a></li>
+  <li class="c"><a href="#ch21">21. <code>admin.py</code></a></li>
+  <li class="c"><a href="#ch22">22. <code>migrations/</code></a></li>
+  <li class="c"><a href="#ch23">23. The seeder</a></li>
+  <li class="c"><a href="#ch24">24. <code>scripts/api_smoke_test.py</code></a></li>
+
+  <li class="p"><a href="#part4">Part IV — The frontend, file by file</a></li>
+  <li class="c"><a href="#ch25">25. Entry points and build config</a></li>
+  <li class="c"><a href="#ch26">26. <code>api.js</code> — every request</a></li>
+  <li class="c"><a href="#ch27">27. <code>auth.js</code> and <code>AuthContext.jsx</code></a></li>
+  <li class="c"><a href="#ch28">28. <code>permissions.js</code></a></li>
+  <li class="c"><a href="#ch29">29. <code>useTableQuery.js</code></a></li>
+  <li class="c"><a href="#ch30">30. <code>App.jsx</code> — the routes</a></li>
+  <li class="c"><a href="#ch31">31. <code>Sidebar.jsx</code></a></li>
+  <li class="c"><a href="#ch32">32. <code>components/</code> — the thirteen</a></li>
+  <li class="c"><a href="#ch33">33. The eight resource pages</a></li>
+  <li class="c"><a href="#ch34">34. The seven other screens</a></li>
+
+  <li class="p"><a href="#part5">Part V — How it behaves</a></li>
+  <li class="c"><a href="#ch35">35. The authentication lifecycle</a></li>
+  <li class="c"><a href="#ch36">36. The list pipeline</a></li>
+  <li class="c"><a href="#ch37">37. The permission matrix</a></li>
+  <li class="c"><a href="#ch38">38. Performance, and what it cost</a></li>
+
+  <li class="p"><a href="#part6">Part VI — Working on it</a></li>
+  <li class="c"><a href="#ch39">39. Recipe — add a field</a></li>
+  <li class="c"><a href="#ch40">40. Recipe — add a filter</a></li>
+  <li class="c"><a href="#ch41">41. Recipe — add a whole resource</a></li>
+  <li class="c"><a href="#ch42">42. Testing, linting, screenshots</a></li>
+  <li class="c"><a href="#ch43">43. Troubleshooting</a></li>
+  <li class="c"><a href="#ch44">44. Before it faces the real world</a></li>
+  <li class="c"><a href="#ch45">45. Rough edges and known gaps</a></li>
+
+  <li class="p"><a href="#appa">Appendices</a></li>
+  <li class="c"><a href="#appa">A. API reference</a></li>
+  <li class="c"><a href="#appb">B. File index</a></li>
+  <li class="c"><a href="#appc">C. Glossary</a></li>
+</ol>
+</section>
+
+<!-- ================= PART I ================= -->
+<div class="part" id="part1"><span class="pnum">Part One</span><span class="ptitle">Orientation</span></div>
+<p class="partlede">What the project is, what it is built from, where everything lives,
+and what actually happens when you click something.</p>
+
+<h1 id="ch1">1. What this project is</h1>
+
+<p class="lead">Two applications that talk to each other over JSON, plus one database
+behind them.</p>
+
+<p>The <strong>backend</strong> is a Django 5.2 project with Django REST Framework on top.
+It owns the database, issues the JWT tokens, and holds every rule about who is allowed
+to change what. The <strong>frontend</strong> is a React 19 single-page application built
+by Vite and styled with Tailwind. It has fifteen screens and no mock data anywhere: if the
+API is down, the pages say so rather than inventing rows.</p>
+
+<p>The domain is a small online-course provider. Nine tables model it: a
+<code>Profile</code> beside each Django <code>User</code>, then
+<code>Teacher</code>, <code>Student</code>, <code>Course</code>, <code>Lesson</code>,
+<code>Assignment</code>, <code>Enrollment</code>, <code>Submission</code> and
+<code>Results</code>. Eight of those get a full CRUD screen in the browser.</p>
+
+<h2>1.1 The two things that surprise people first</h2>
+
+<p><strong>You sign in with a phone number, not a username.</strong> The login view looks
+the caller up by <code>Profile.phone</code>, which is a unique column, and then checks the
+password against the <code>User</code> it hangs off. The username still exists — it is how
+an admin finds you — but it is not a credential.</p>
+
+<p><strong>There is no public sign-up.</strong> <code>POST /api/register/</code> is guarded
+by <code>IsAdmin</code>, which refuses every method including <code>GET</code>. An admin
+creates accounts from the Accounts screen inside the app and picks the role at the same time.
+Anonymous callers get 401; signed-in teachers and students get 403.</p>
+
+<h2>1.2 The three rules the codebase sticks to</h2>
+
+<ol>
+<li><strong>The API is what enforces permissions.</strong> The frontend hides buttons that
+would not work, but that is a courtesy to the reader, not a control. Every write is checked
+again on the server by a permission class.</li>
+<li><strong>Every request the frontend makes lives in <code>src/api.js</code>.</strong>
+Nothing else in the React app calls <code>fetch</code>. One file to read to know the whole
+surface the browser touches.</li>
+<li><strong>The eight table pages are the same page eight times.</strong> Same hook, same
+components, different columns and different field names. Read
+<a href="#ch33"><code>pages/Students.jsx</code></a> once and you have read all eight.</li>
+</ol>
+
+<h2>1.3 What is actually in the database right now</h2>
+
+<p>The seeded development database on the machine this guidebook was written on holds:</p>
+
+<table class="tight">
+<tr><th>Table</th><th class="center">Rows</th><th>Table</th><th class="center">Rows</th></tr>
+<tr><td>User</td><td class="center">212</td><td>Assignment</td><td class="center">180</td></tr>
+<tr><td>Profile</td><td class="center">212</td><td>Enrollment</td><td class="center">946</td></tr>
+<tr><td>Teacher</td><td class="center">26</td><td>Submission</td><td class="center">7,665</td></tr>
+<tr><td>Student</td><td class="center">180</td><td>Results</td><td class="center">4,630</td></tr>
+<tr><td>Course</td><td class="center">24</td><td>Lesson</td><td class="center">186</td></tr>
+</table>
+
+<p>Those numbers matter to how the code is written. Seven thousand submissions is enough
+that "send the whole table to the browser and let it sort things out" stops working, which
+is why every list endpoint is paginated and filtered on the server. See
+<a href="#ch38">chapter 38</a>.</p>
+
+<figure>
+  <img src="screenshots/dashboard.png" alt="The dashboard">
+  <figcaption>The dashboard: eight tiles, each a live count read from the API.</figcaption>
+</figure>
+
+<h1 id="ch2">2. The stack, exactly</h1>
+
+<h2>2.1 Backend dependencies</h2>
+
+<p>All six, from <span class="filepath">backend/requirements.txt</span>:</p>
+
+<table>
+<tr><th>Package</th><th>Pinned</th><th>What it does here</th></tr>
+<tr><td><code>Django</code></td><td>5.2.7</td><td>ORM, migrations, auth, admin site, the dev server</td></tr>
+<tr><td><code>djangorestframework</code></td><td>3.15.2</td><td>Serializers, generic views, the filter and pagination machinery</td></tr>
+<tr><td><code>djangorestframework-simplejwt</code></td><td>5.4.0</td><td>Access and refresh tokens; its <code>token_blacklist</code> app is installed too</td></tr>
+<tr><td><code>django-cors-headers</code></td><td>4.9.0</td><td>Lets the browser on :5180 call the API on :8001</td></tr>
+<tr><td><code>mysqlclient</code></td><td>2.2.7</td><td>The MySQL/MariaDB driver. Needs client headers at install time</td></tr>
+<tr><td><code>PyJWT</code></td><td>2.10.1</td><td>Pulled in by SimpleJWT; not imported directly anywhere</td></tr>
+</table>
+
+<div class="note">
+<p>The migration files were generated on Django 6.0.6 and the project now runs on 5.2.7.
+That is deliberate and handled — see <code>DEFAULT_AUTO_FIELD</code> in
+<a href="#ch13">chapter 13</a> — but it is why the migration headers name a version
+newer than the one in <code>requirements.txt</code>.</p>
+</div>
+
+<h2>2.2 Frontend dependencies</h2>
+
+<p>From <span class="filepath">frontend/package.json</span>. Six runtime dependencies,
+nine development ones.</p>
+
+<table>
+<tr><th>Package</th><th>Range</th><th>What it does here</th></tr>
+<tr><td><code>react</code>, <code>react-dom</code></td><td>^19.2.7</td><td>The UI library</td></tr>
+<tr><td><code>react-router-dom</code></td><td>^7.11.0</td><td>Client-side routing, nested layout routes, <code>useSearchParams</code></td></tr>
+<tr><td><code>tailwindcss</code></td><td>^4.3.3</td><td>All styling. Tailwind 4, so there is no <code>tailwind.config.js</code></td></tr>
+<tr><td><code>@tailwindcss/vite</code></td><td>^4.3.3</td><td>The Tailwind 4 Vite plugin; replaces the old PostCSS setup</td></tr>
+<tr><td><code>lucide-react</code></td><td>^1.27.0</td><td>Every icon in the app</td></tr>
+<tr><td><code>vite</code></td><td>^8.1.1</td><td>Dev server and bundler</td></tr>
+<tr><td><code>eslint</code> + plugins</td><td>^10.6.0</td><td>Linting, flat config</td></tr>
+</table>
+
+<p>There is no state library, no data-fetching library, no component library and no test
+runner. The app's state is <code>useState</code> and one context; its data fetching is
+<code>fetch</code> wrapped in <code>request()</code>; its components are thirteen files in
+<code>src/components/</code>.</p>
+
+<h2>2.3 Versions this was tested against</h2>
+
+<table class="tight">
+<tr><th>Tool</th><th>Minimum</th><th>Tested on</th></tr>
+<tr><td>Python</td><td>3.11</td><td>3.14</td></tr>
+<tr><td>Node</td><td>20</td><td>25</td></tr>
+<tr><td>MySQL / MariaDB</td><td>8.0 / 10.6</td><td>MariaDB on port 3306</td></tr>
+</table>
+
+<h1 id="ch3">3. The map of the repository</h1>
+
+<p>Every tracked file, with a note on what it is for. Nothing here is generated except
+the screenshots and this guidebook.</p>
+
+<div class="ascii">lms/
+├── README.md                          the short version of this book
+├── .gitignore                         __pycache__, venv/, .env, node_modules/, .DS_Store
+│
+├── backend/                           the Django project root (manage.py lives here)
+│   ├── manage.py                      unmodified startproject boilerplate
+│   ├── requirements.txt               six pinned packages
+│   │
+│   ├── lms/                           the project package — settings and root routing
+│   │   ├── settings.py                everything configurable, plus long comments
+│   │   ├── urls.py                    /admin/ and /api/ only
+│   │   ├── wsgi.py  asgi.py           deployment entry points, untouched
+│   │   └── __init__.py
+│   │
+│   ├── backend/                       the one Django app. All the code is here.
+│   │   ├── models.py                  9 models, ~100 lines
+│   │   ├── serializers.py             11 serializers: auth, profile, and 8 resources
+│   │   ├── views.py                   6 auth views + 16 resource views
+│   │   ├── urls.py                    22 routes under /api/
+│   │   ├── permissions.py             role_of() and 5 permission classes  ← the rules
+│   │   ├── filters.py                 FieldFilterBackend: ?field= and ?from=/?to=
+│   │   ├── pagination.py              StandardPagination: the list envelope
+│   │   ├── admin.py                   9 ModelAdmins; role is editable inline
+│   │   ├── apps.py                    BackendConfig, nothing custom
+│   │   ├── tests.py                   empty — see chapter 45
+│   │   ├── seed_catalog.py            470 lines of names, courses, briefs, feedback
+│   │   ├── migrations/
+│   │   │   ├── 0001_initial.py                     Student, Teacher, Profile
+│   │   │   ├── 0002_course_enrollment_...py        the other six models
+│   │   │   ├── 0003_profile_role.py                adds Profile.role
+│   │   │   └── 0004_existing_accounts_become_admins.py   a data migration
+│   │   └── management/commands/
+│   │       └── seed_data.py           488 lines. Idempotent. See chapter 23.
+│   │
+│   └── scripts/
+│       └── api_smoke_test.py          487 lines. Drives every endpoint over real HTTP.
+│
+├── frontend/
+│   ├── index.html                     one div, one module script
+│   ├── package.json  package-lock.json
+│   ├── vite.config.js                 React + Tailwind plugins, port 5180
+│   ├── eslint.config.js               flat config, ESLint 10
+│   ├── .env.example                   VITE_API_URL, and why it ends in /api
+│   ├── .gitignore                     node_modules, dist, *.local
+│   ├── README.md                      the frontend-only quickstart
+│   ├── public/favicon.svg
+│   └── src/
+│       ├── main.jsx                   BrowserRouter &gt; AuthProvider &gt; App
+│       ├── App.jsx                    every route, and which ones are protected
+│       ├── index.css                  one line: @import "tailwindcss"
+│       ├── api.js                     every call to the backend, and the session
+│       ├── auth.js                    the context object and useAuth()
+│       ├── AuthContext.jsx            the provider: log in, log out, top up the role
+│       ├── permissions.js             a mirror of the backend rules, for buttons only
+│       ├── useTableQuery.js           page/search/sort/filter state, written once
+│       ├── Sidebar.jsx                the menu and the frame around signed-in pages
+│       ├── components/                13 files: Table, Pagination, FilterBar, Alert...
+│       └── pages/                     15 files, one per screen
+│
+└── docs/
+    ├── capture_screenshots.py         Playwright script that redraws the images
+    ├── screenshots/                   18 PNGs used by the README and by this book
+    ├── guidebook.html                 the source of this document
+    └── LMS-Guidebook.pdf              this document</div>
+
+<h2>3.1 The one confusing name</h2>
+
+<p>The Django <em>project</em> package is <code>backend/lms/</code> and the Django
+<em>app</em> is <code>backend/backend/</code>. So the import path for the app's models is
+<code>backend.models</code>, and the settings module is <code>lms.settings</code>. Both live
+under the top-level <code>backend/</code> directory, which is a third, unrelated use of the
+word. When this book says "the app", it means <span class="filepath">backend/backend/</span>.</p>
+
+<h2>3.2 Where to start reading</h2>
+
+<p>In this order, and nothing else is needed to understand the shape of the whole thing:</p>
+
+<ol>
+<li><span class="filepath">backend/backend/models.py</span> — what exists</li>
+<li><span class="filepath">backend/backend/permissions.py</span> — who may change it</li>
+<li><span class="filepath">backend/backend/views.py</span> — how it is exposed</li>
+<li><span class="filepath">frontend/src/api.js</span> — how the browser asks</li>
+<li><span class="filepath">frontend/src/pages/Students.jsx</span> — the shape of all eight table pages</li>
+</ol>
+
+<h1 id="ch4">4. One request, end to end</h1>
+
+<p class="lead">Follow a single click — typing "nusrat" into the search box on the Students
+page — through every file it touches.</p>
+
+<div class="ascii">  browser                                          server
+  ───────                                          ──────
+1 keystroke in &lt;FilterBar&gt;
+      │ onSearchChange
+2 useTableQuery: setSearchBox("nusrat")
+      │ 300 ms pause (debounce)
+3 setSearch("nusrat"), setPage(1)
+      │ params useMemo rebuilds
+4 Students.jsx effect re-runs
+      │ studentsApi.list(params)
+5 api.js toQueryString drops the empties
+      │ GET /api/student/?page=1&amp;page_size=10&amp;search=nusrat&amp;ordering=id
+      │ Authorization: Bearer eyJhbGciOi...
+      └──────────────────────────────────────────►
+                                          6  CorsMiddleware: origin allowed?
+                                          7  JWTAuthentication: token valid? → request.user
+                                          8  AdminWrites.has_permission: GET is safe → True
+                                          9  SearchFilter:      name/email/roll_number icontains
+                                         10  FieldFilterBackend: no filter params present
+                                         11  OrderingFilter:    ?ordering=id
+                                         12  StandardPagination: LIMIT 10 OFFSET 0 + COUNT(*)
+                                         13  StudentSerializer: 10 rows → JSON
+      ◄──────────────────────────────────────────┘
+14 request(): 200, parse body
+15 setStudents(body.results); setCount(body.count); setTotalPages(body.total_pages)
+16 &lt;Table&gt; redraws 10 rows, &lt;Pagination&gt; redraws the footer</div>
+
+<h2>4.1 The same trace as file references</h2>
+
+<table>
+<tr><th>Step</th><th>File</th><th>What it does</th></tr>
+<tr><td>1</td><td><code>components/FilterBar.jsx</code></td><td>Controlled <code>&lt;input type="search"&gt;</code>, calls <code>onSearchChange</code></td></tr>
+<tr><td>2–3</td><td><code>useTableQuery.js</code></td><td>Holds <code>searchBox</code> and <code>search</code> separately; a <code>setTimeout</code> moves one to the other</td></tr>
+<tr><td>4</td><td><code>pages/Students.jsx</code></td><td>Effect keyed on <code>queryParams</code>; sets an <code>isCurrent</code> flag to ignore stale answers</td></tr>
+<tr><td>5</td><td><code>api.js</code></td><td><code>resource("student").list()</code> → <code>request()</code> → <code>fetch</code> with the bearer header</td></tr>
+<tr><td>6</td><td><code>corsheaders</code></td><td>Middleware, second in the list, before <code>CommonMiddleware</code></td></tr>
+<tr><td>7</td><td>SimpleJWT</td><td><code>DEFAULT_AUTHENTICATION_CLASSES</code>; a bad token is 401 here and never reaches the view</td></tr>
+<tr><td>8</td><td><code>permissions.py</code></td><td><code>RoleWritePermission</code> lets any signed-in caller read</td></tr>
+<tr><td>9–11</td><td>DRF + <code>filters.py</code></td><td>Three backends run in order, each a no-op unless the view declares its fields</td></tr>
+<tr><td>12</td><td><code>pagination.py</code></td><td>Slices the queryset and builds the <code>{count, page, …}</code> envelope</td></tr>
+<tr><td>13</td><td><code>serializers.py</code></td><td><code>StudentSerializer</code>, six fields</td></tr>
+<tr><td>14–16</td><td><code>api.js</code>, the page, <code>components/</code></td><td>Parse, set state, re-render</td></tr>
+</table>
+
+<div class="tip">
+<p>Every list request in this app follows exactly that path. The only things that vary are
+the view's <code>search_fields</code> / <code>filter_fields</code> / <code>ordering_fields</code>
+and which serializer runs at step 13.</p>
+</div>
+
+<!-- ================= PART II ================= -->
+<div class="part" id="part2"><span class="pnum">Part Two</span><span class="ptitle">Getting it running</span></div>
+<p class="partlede">Six steps from a clean checkout to a browser showing real data,
+then the full list of things you can configure.</p>
+
+<h1 id="ch5">5. Prerequisites</h1>
+
+<table>
+<tr><th>What</th><th>Version</th><th>Why</th></tr>
+<tr><td>Python</td><td>3.11 or newer</td><td>Django 5.2 needs 3.10+; this was tested on 3.14</td></tr>
+<tr><td>Node.js</td><td>20 or newer</td><td>Vite 8 requires it</td></tr>
+<tr><td>MySQL or MariaDB</td><td>8.0 / 10.6+</td><td>The only database backend configured</td></tr>
+<tr><td>MySQL client headers</td><td>—</td><td><code>mysqlclient</code> compiles against them at install time</td></tr>
+</table>
+
+<p>On macOS with Homebrew:</p>
+
+<pre class="sh"><code>brew install mariadb pkg-config
+brew services start mariadb</code></pre>
+
+<p>On Debian or Ubuntu:</p>
+
+<pre class="sh"><code>sudo apt install mariadb-server libmysqlclient-dev pkg-config python3-venv</code></pre>
+
+<div class="warn">
+<p>If <code>pip install mysqlclient</code> fails with a compiler error about
+<code>mysql.h</code>, the client headers are missing — not Python's fault. Install
+<code>mysql-client</code> (macOS) or <code>libmysqlclient-dev</code> (Debian) and retry.</p>
+</div>
+
+<h1 id="ch6">6. Step 1 — The database</h1>
+
+<p>Create the database and a user for it. These three names are the defaults compiled into
+<span class="filepath">backend/lms/settings.py</span>, so matching them means you can skip
+the environment variables entirely.</p>
+
+<pre class="sql"><code>CREATE DATABASE lms_db CHARACTER SET utf8mb4;
+CREATE USER 'lms_user'@'127.0.0.1' IDENTIFIED BY 'lms_user_pw';
+GRANT ALL PRIVILEGES ON lms_db.* TO 'lms_user'@'127.0.0.1';</code></pre>
+
+<p>In one line from a shell:</p>
+
+<pre class="sh"><code>mysql -u root -e "
+  CREATE DATABASE lms_db CHARACTER SET utf8mb4;
+  CREATE USER 'lms_user'@'127.0.0.1' IDENTIFIED BY 'lms_user_pw';
+  GRANT ALL PRIVILEGES ON lms_db.* TO 'lms_user'@'127.0.0.1';
+"</code></pre>
+
+<div class="note">
+<p><code>127.0.0.1</code> and <code>localhost</code> are different hosts to MySQL's grant
+system: one means TCP, the other means the unix socket. The settings file uses
+<code>127.0.0.1</code>, so grant to that. Granting to <code>'lms_user'@'localhost'</code>
+instead is the most common reason for <code>Access denied</code> on the first
+<code>migrate</code>.</p>
+</div>
+
+<h1 id="ch7">7. Step 2 — The backend</h1>
+
+<pre class="sh"><code>cd backend
+python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py runserver 8001</code></pre>
+
+<p>Four migrations run, in order: the three original models, then the other six, then
+<code>Profile.role</code>, then the data migration that promotes any pre-existing account
+to admin. On an empty database that last one updates nothing.</p>
+
+<p>Two addresses are now live:</p>
+
+<table class="tight">
+<tr><th>Address</th><th>What</th></tr>
+<tr><td><code>http://127.0.0.1:8001/api/</code></td><td>The JSON API. A browser hitting it gets DRF's browsable pages.</td></tr>
+<tr><td><code>http://127.0.0.1:8001/admin/</code></td><td>Django admin. Nine models registered; this is where roles are changed.</td></tr>
+</table>
+
+<div class="warn">
+<p><strong>Port 8001, not 8000.</strong> The frontend's default <code>VITE_API_URL</code>,
+the smoke test's default <code>LMS_API</code>, and the CORS list all assume 8001. Running
+<code>runserver</code> with no argument gives you 8000 and nothing will connect.</p>
+</div>
+
+<h2>7.1 If there is no admin account yet</h2>
+
+<pre class="sh"><code>python manage.py createsuperuser</code></pre>
+
+<p>A superuser has no <code>Profile</code> row, and therefore no <code>role</code> column to
+read. <code>role_of()</code> in <span class="filepath">permissions.py</span> checks
+<code>user.is_superuser</code> first and returns <code>admin</code>, so
+<code>createsuperuser</code> is always a way back into a locked-out system.</p>
+
+<h1 id="ch8">8. Step 3 — Seeding data</h1>
+
+<pre class="sh"><code>python manage.py seed_data</code></pre>
+
+<p>This fills the database with a realistic amount of realistic-looking data — around 180
+students, two dozen courses, several thousand submissions and a few thousand grades — and
+guarantees the three demo logins. It takes a few seconds and prints a table of totals when
+it finishes.</p>
+
+<h2>8.1 The three options</h2>
+
+<table>
+<tr><th>Flag</th><th>Default</th><th>Effect</th></tr>
+<tr><td><code>--teachers N</code></td><td>26</td><td>How many <code>Teacher</code> rows to <em>end up with</em>, not how many to add</td></tr>
+<tr><td><code>--students N</code></td><td>180</td><td>Same, for <code>Student</code></td></tr>
+<tr><td><code>--fresh</code></td><td>off</td><td>Delete every seeded row first, then rebuild</td></tr>
+<tr><td><code>--seed N</code></td><td>20260902</td><td>Random seed for the purely cosmetic parts</td></tr>
+</table>
+
+<pre class="sh"><code>python manage.py seed_data                  # top up whatever is missing
+python manage.py seed_data --fresh          # wipe seeded rows first
+python manage.py seed_data --students 400   # a bigger cohort</code></pre>
+
+<h2>8.2 Why running it twice is safe</h2>
+
+<p>Every "does this row exist yet" decision is derived from the ids involved rather than
+drawn from a random stream. A helper called <code>dice()</code> hashes the inputs with
+<code>zlib.crc32</code> and takes the result modulo 100, so the same question gives the same
+answer in this process and in the next one. A student who had handed in four of six
+assignments still has four of six after a second run. Rows are found by a stable key first
+— a person by email, a course by title, a lesson by title within its course — so nothing is
+duplicated either. Full detail in <a href="#ch23">chapter 23</a>.</p>
+
+<div class="warn">
+<p><code>--fresh</code> deletes <em>all</em> course data — every teacher, student, course,
+lesson, assignment, enrollment, submission and result in the database, seeded or not — plus
+every non-superuser account whose email ends in <code>@ostad.example.com</code> or
+<code>@student.example.com</code>. Superusers survive. Do not point it at anything you
+care about.</p>
+</div>
+
+<h1 id="ch9">9. Step 4 — The frontend</h1>
+
+<pre class="sh"><code>cd frontend
+npm install
+npm run dev</code></pre>
+
+<p>Vite serves on <strong>http://localhost:5180</strong>. That port is set explicitly in
+<span class="filepath">frontend/vite.config.js</span> because 5173–5175, Vite's own defaults,
+were already taken by other projects on the author's machine. If 5180 is busy too, Vite
+quietly takes the next free port and prints which one.</p>
+
+<div class="warn">
+<p>If Vite moves to another port, add that origin to <code>CORS_ALLOWED_ORIGINS</code> in
+<span class="filepath">backend/lms/settings.py</span> or every request will be blocked by the
+browser before it leaves. The list currently allows 5180 and 5173, on both
+<code>localhost</code> and <code>127.0.0.1</code>.</p>
+</div>
+
+<h2>9.1 Pointing it at a different backend</h2>
+
+<pre class="sh"><code>cp .env.example .env.local
+# then edit:
+VITE_API_URL=http://127.0.0.1:8001/api</code></pre>
+
+<p>Two things about that variable. It must start with <code>VITE_</code> — Vite only exposes
+those to the browser bundle. And it must end in <code>/api</code>, because every path in
+<code>src/api.js</code> is written relative to it (<code>"/login/"</code>,
+<code>"/student/"</code>, and so on). <code>.env.local</code> is gitignored, which is what
+makes it the right place for machine-specific values.</p>
+
+<h1 id="ch10">10. Step 5 — Signing in</h1>
+
+<p>Open <a href="http://localhost:5180">http://localhost:5180</a>. Any route redirects to
+<code>/login</code> without a token.</p>
+
+<table>
+<tr><th>Role</th><th>Phone</th><th>Password</th><th>What it can do</th></tr>
+<tr><td>Admin</td><td><code>01700000000</code></td><td><code>admin1234</code></td><td>Everything, including creating accounts</td></tr>
+<tr><td>Teacher</td><td><code>01700000001</code></td><td><code>teacher1234</code></td><td>Course material, enrollments, grading</td></tr>
+<tr><td>Student</td><td><code>01700000002</code></td><td><code>student1234</code></td><td>Read everything, hand in a submission</td></tr>
+</table>
+
+<p>The seeder repairs these three on every run — it sets the phone and the password
+unconditionally, and even moves another account off the number if one is squatting on it —
+so the login page's one-click buttons always work.</p>
+
+<figure>
+  <img src="screenshots/login.png" alt="The login page">
+  <figcaption>The login page in <code>npm run dev</code>. The dashed amber block is wrapped in
+  <code>import.meta.env.DEV</code>, so Vite drops it from a production build.</figcaption>
+</figure>
+
+<div class="warn">
+<p>These are development fixtures with published passwords. They exist in whatever database
+you point the seeder at. Never run <code>seed_data</code> against anything real.</p>
+</div>
+
+<h1 id="ch11">11. Step 6 — Proving it works</h1>
+
+<p>With the server running in one terminal:</p>
+
+<pre class="sh"><code>cd backend
+python scripts/api_smoke_test.py</code></pre>
+
+<p>This is not a unit test suite. It talks HTTP to a real server with a real database, which
+is the only way to catch the class of problem that only appears there: a permission class
+wired to the wrong view, a serializer that rejects its own output, a route that was never
+added to <code>urls.py</code>.</p>
+
+<p>Every check states the status code it expects, and <strong>a check that expects 403
+passes only on 403</strong>. The permission rules are part of what "working" means, so a
+create that succeeds when it should have been refused is a failure, not a bonus. Anything
+the script creates it deletes on the way out — except the one account the registration
+check makes, because the API has no delete-user route; it says so and tells you to remove it
+from <code>/admin/</code>.</p>
+
+<pre class="txt"><code>Target: http://127.0.0.1:8001/api
+
+Authentication
+--------------
+  pass log in as admin [200]
+  pass admin gets both tokens and the right role
+  ...
+Writing (create, update, delete, and who may)
+---------------------------------------------
+  pass anonymous cannot create a teacher [401]
+  pass teacher cannot create a teacher [403]
+  pass student cannot create a teacher [403]
+  pass admin creates a teacher [201]
+  ...
+==============================================================
+All 214 checks passed.</code></pre>
+
+<p>It exits 0 on success, 1 on any failure, and 2 if it cannot reach the server or sign in.
+Point it elsewhere with <code>LMS_API=http://host:port/api</code>.</p>
+
+<h1 id="ch12">12. Every environment variable</h1>
+
+<p>Nothing here is required — every one has a default in the settings file — but this is the
+complete list of what can be overridden.</p>
+
+<h2>12.1 Backend</h2>
+
+<table>
+<tr><th>Variable</th><th>Default</th><th>Used for</th></tr>
+<tr><td><code>DB_NAME</code></td><td><code>lms_db</code></td><td rowspan="5">The MySQL connection in <code>DATABASES['default']</code></td></tr>
+<tr><td><code>DB_USER</code></td><td><code>lms_user</code></td></tr>
+<tr><td><code>DB_PASSWORD</code></td><td><code>lms_user_pw</code></td></tr>
+<tr><td><code>DB_HOST</code></td><td><code>127.0.0.1</code></td></tr>
+<tr><td><code>DB_PORT</code></td><td><code>3306</code></td></tr>
+<tr><td><code>FRONTEND_PASSWORD_RESET_URL</code></td><td><code>http://localhost:5180/reset-password</code></td><td>Where the emailed reset link points</td></tr>
+<tr><td><code>EMAIL_BACKEND</code></td><td><code>…console.EmailBackend</code></td><td>Console prints mail instead of sending it</td></tr>
+<tr><td><code>DEFAULT_FROM_EMAIL</code></td><td><code>no-reply@example.com</code></td><td>The From: on reset mail</td></tr>
+<tr><td><code>EMAIL_HOST</code></td><td><code>smtp.gmail.com</code></td><td rowspan="5">SMTP, only used if you switch the backend to <code>smtp</code></td></tr>
+<tr><td><code>EMAIL_PORT</code></td><td><code>587</code></td></tr>
+<tr><td><code>EMAIL_HOST_USER</code></td><td>a hardcoded gmail address</td></tr>
+<tr><td><code>EMAIL_HOST_PASSWORD</code></td><td>empty</td></tr>
+<tr><td><code>EMAIL_USE_TLS</code> / <code>EMAIL_USE_SSL</code></td><td><code>True</code> / <code>False</code></td></tr>
+</table>
+
+<div class="gap">
+<p><code>SECRET_KEY</code>, <code>DEBUG</code> and <code>ALLOWED_HOSTS</code> are
+<em>not</em> read from the environment — they are literals in the settings file, with the
+development values committed. That is fine for development and is the first thing to change
+otherwise. See <a href="#ch44">chapter 44</a>.</p>
+</div>
+
+<h2>12.2 Frontend</h2>
+
+<table>
+<tr><th>Variable</th><th>Default</th><th>Used for</th></tr>
+<tr><td><code>VITE_API_URL</code></td><td><code>http://127.0.0.1:8001/api</code></td><td>The base every path in <code>api.js</code> hangs off</td></tr>
+</table>
+
+<p>Read at build time by Vite via <code>import.meta.env</code>, with the fallback written
+into <code>api.js</code> itself:</p>
+
+<pre class="js"><code>const BASE_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8001/api";</code></pre>
+
+<h2>12.3 Smoke test</h2>
+
+<table>
+<tr><th>Variable</th><th>Default</th></tr>
+<tr><td><code>LMS_API</code></td><td><code>http://127.0.0.1:8001/api</code></td></tr>
+</table>
+
+<!-- ================= PART III ================= -->
+<div class="part" id="part3"><span class="pnum">Part Three</span><span class="ptitle">The backend, file by file</span></div>
+<p class="partlede">Twelve files hold the entire server. This part goes through all of them
+in dependency order: configuration, then data, then rules, then the machinery that turns a
+query string into a page of rows, then the views that tie it together.</p>
+
+<h1 id="ch13">13. <code>lms/</code> — the project package</h1>
+
+<h2>13.1 <code>manage.py</code></h2>
+
+<p>Unmodified <code>startproject</code> boilerplate. It sets
+<code>DJANGO_SETTINGS_MODULE=lms.settings</code> and hands off to
+<code>execute_from_command_line</code>. Worth knowing only because every command in this book
+is run from <span class="filepath">backend/</span>, where this file lives.</p>
+
+<h2>13.2 <code>lms/urls.py</code></h2>
+
+<pre class="py"><code>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('backend.urls')),
+]</code></pre>
+
+<p>Two lines. Everything else is in the app's own <code>urls.py</code>
+(<a href="#ch20">chapter 20</a>). There is no route serving the React build — in development
+Vite serves the frontend itself, and nothing in the repository wires up a production static
+build.</p>
+
+<h2>13.3 <code>wsgi.py</code> and <code>asgi.py</code></h2>
+
+<p>Both untouched. <code>WSGI_APPLICATION = 'lms.wsgi.application'</code> in settings points
+at the first; nothing points at the second, but it is there if you want to run under an ASGI
+server.</p>
+
+<h2>13.4 <code>settings.py</code>, setting by setting</h2>
+
+<p>This file is longer than a generated one because most decisions in it carry a comment
+explaining why. Here is every block.</p>
+
+<h3>Security and debug</h3>
+
+<pre class="py"><code>SECRET_KEY = 'django-insecure-@hg+%+(*w2m0jh=8$ksnpsoe+dv2jb+py3@1b(3vhohjb7cx8!'
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']</code></pre>
+
+<p>Development values, committed. The key is the one <code>startproject</code> generated;
+the <code>django-insecure-</code> prefix is Django's own marker that it was machine-generated
+and never rotated.</p>
+
+<h3><code>INSTALLED_APPS</code></h3>
+
+<p>The six Django contrib apps, then four more:</p>
+
+<table class="tight">
+<tr><th>App</th><th>Why it is there</th></tr>
+<tr><td><code>backend</code></td><td>The one app in the project</td></tr>
+<tr><td><code>rest_framework</code></td><td>DRF itself</td></tr>
+<tr><td><code>rest_framework_simplejwt.token_blacklist</code></td><td>Gives the two tables <code>blacklist_user_tokens()</code> writes to when a password changes</td></tr>
+<tr><td><code>corsheaders</code></td><td>Cross-origin headers for the Vite dev server</td></tr>
+</table>
+
+<h3><code>MIDDLEWARE</code></h3>
+
+<p>Django's standard seven, with <code>corsheaders.middleware.CorsMiddleware</code> inserted
+second — after <code>SecurityMiddleware</code> and before <code>CommonMiddleware</code>.
+That position matters: CORS headers have to be attached before <code>CommonMiddleware</code>
+can issue a redirect that would strip them.</p>
+
+<h3><code>CORS_ALLOWED_ORIGINS</code></h3>
+
+<pre class="py"><code>CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5180',
+    'http://127.0.0.1:5180',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]</code></pre>
+
+<p>5180 is where Vite actually runs. 5173 is kept because it is Vite's own default and the
+port older versions of the README named. <code>localhost</code> and <code>127.0.0.1</code>
+are distinct origins to a browser, so both spellings are listed.</p>
+
+<h3><code>REST_FRAMEWORK</code></h3>
+
+<p>Five keys, and each one is a decision worth understanding.</p>
+
+<table>
+<tr><th>Key</th><th>Value</th><th>Consequence</th></tr>
+<tr><td><code>DEFAULT_AUTHENTICATION_CLASSES</code></td><td><code>JWTAuthentication</code></td><td>The only way to authenticate. No session auth on the API, so the browsable API cannot be used while logged into <code>/admin/</code>.</td></tr>
+<tr><td><code>DEFAULT_PERMISSION_CLASSES</code></td><td><code>IsAuthenticated</code></td><td><strong>Fails closed.</strong> DRF's own default is <code>AllowAny</code>; without this line, any view added without explicit <code>permission_classes</code> would be public.</td></tr>
+<tr><td><code>DEFAULT_FILTER_BACKENDS</code></td><td><code>SearchFilter</code>, <code>FieldFilterBackend</code>, <code>OrderingFilter</code></td><td>All three run on every list view, in that order. Each is a no-op unless the view declares the matching attribute, so detail routes are untouched.</td></tr>
+<tr><td><code>DEFAULT_PAGINATION_CLASS</code></td><td><code>StandardPagination</code></td><td>Lists come back as an envelope, never a bare array.</td></tr>
+<tr><td><code>PAGE_SIZE</code></td><td><code>10</code></td><td>The default page. Overridable per request up to 200.</td></tr>
+</table>
+
+<h3><code>SIMPLE_JWT</code></h3>
+
+<pre class="py"><code>SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=8),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}</code></pre>
+
+<p>The library default access lifetime is five minutes, which forces a re-login in the
+middle of a task. <strong>There is no refresh endpoint in this project</strong> — the
+refresh token is issued and handed to the browser, but nothing ever exchanges it — so the
+access token is widened to eight hours instead. That single fact explains several
+decisions in the frontend: see <a href="#ch35">chapter 35</a>.</p>
+
+<h3><code>DATABASES</code></h3>
+
+<pre class="py"><code>DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME', 'lms_db'),
+        'USER': os.getenv('DB_USER', 'lms_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'lms_user_pw'),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
+}</code></pre>
+
+<p>MySQL only. There is no SQLite fallback, so the database has to exist before
+<code>migrate</code> will run.</p>
+
+<h3>Password validation</h3>
+
+<p>All four of Django's stock validators are on:
+<code>UserAttributeSimilarity</code>, <code>MinimumLength</code> (8),
+<code>CommonPassword</code> and <code>NumericPassword</code>. They are enforced in three
+places, all through <code>validate_password()</code>: account creation, self-service
+password change, and password reset. This is why the smoke test's "weak password refused"
+checks expect 400 on <code>"12345678"</code> — it is both too common and entirely numeric.</p>
+
+<h3>Password reset</h3>
+
+<pre class="py"><code>FRONTEND_PASSWORD_RESET_URL = os.getenv(
+    "FRONTEND_PASSWORD_RESET_URL", "http://localhost:5180/reset-password"
+)
+PASSWORD_RESET_TIMEOUT = 60 * 60  # 1 hour</code></pre>
+
+<p>The view appends <code>?uid=…&amp;token=…</code> to that URL and mails the result. One
+hour is Django's <code>default_token_generator</code> window, checked server-side on the way
+back in.</p>
+
+<h3>Email</h3>
+
+<p>The default backend is <code>console.EmailBackend</code>: reset mail is printed to the
+terminal running <code>runserver</code>, not sent. Everything else in the block
+(<code>EMAIL_HOST</code>, port 587, TLS on) is a Gmail SMTP configuration waiting for you to
+switch <code>EMAIL_BACKEND</code> and supply an app password.</p>
+
+<h3><code>DEFAULT_AUTO_FIELD</code></h3>
+
+<pre class="py"><code>DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'</code></pre>
+
+<p>The migrations were generated on Django 6, where <code>BigAutoField</code> is the default
+primary key type. Django 5.2 falls back to <code>AutoField</code> unless told otherwise,
+which would make <code>makemigrations</code> want to rewrite every primary key even though
+the columns in the database are already <code>bigint</code>. This one line prevents a
+pointless migration.</p>
+
+<h1 id="ch14">14. <code>models.py</code> — nine tables</h1>
+
+<p class="lead">About a hundred lines describe the entire domain. Every model is a plain
+<code>models.Model</code> with no custom manager, no <code>Meta</code> class, and no
+<code>save()</code> override.</p>
+
+<h2>14.1 The shape of it</h2>
+
+<div class="ascii">   User ──1:1── Profile          phone (unique, the login), role
+                                  │
+   Teacher ──1:N── Course ──1:N── Lesson ──1:N── Assignment
+                     │                              │
+                     ├──1:N── Enrollment ──N:1── Student
+                     │                              │
+                     └──1:N── Assignment ──1:N── Submission ──N:1── Student
+                                                    │
+                                                    └──1:1── Results</div>
+
+<h2>14.2 <code>Profile</code></h2>
+
+<pre class="py"><code>class Profile(models.Model):
+    ADMIN = "admin"; TEACHER = "teacher"; STUDENT = "student"
+    ROLE_CHOICES = [(ADMIN, "Admin"), (TEACHER, "Teacher"), (STUDENT, "Student")]
+
+    user  = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=20, unique=True)
+    role  = models.CharField(max_length=10, choices=ROLE_CHOICES, default=STUDENT)</code></pre>
+
+<p>This is the join between Django's built-in <code>User</code> and everything this app adds.
+<code>phone</code> is unique because it is the credential — <code>LoginView</code> does
+<code>Profile.objects.get(phone=phone)</code> and works back to the user. <code>role</code>
+defaults to the least privileged value, so an account created by any path that forgets to
+set it is a student.</p>
+
+<div class="note">
+<p>Two kinds of account have no <code>Profile</code> at all: a superuser made with
+<code>createsuperuser</code>, and anything created outside the register endpoint.
+<code>role_of()</code> handles both — superuser means admin, no profile means student.
+Note the consequence: <strong>a superuser has no phone number and therefore cannot log in
+through the app's own login page.</strong> It can only use <code>/admin/</code>.</p>
+</div>
+
+<h2>14.3 The eight domain models</h2>
+
+<table>
+<tr><th>Model</th><th>Fields</th><th>Points at</th></tr>
+<tr><td><code>Teacher</code></td><td><code>name</code>, <code>email</code> (both nullable), <code>subject</code>, <code>is_active</code></td><td>—</td></tr>
+<tr><td><code>Student</code></td><td><code>name</code>, <code>email</code>, <code>roll_number</code> (all nullable), <code>enrollment_date</code> (required), <code>is_active</code></td><td>—</td></tr>
+<tr><td><code>Course</code></td><td><code>title</code>, <code>description</code></td><td><code>teacher</code> → Teacher</td></tr>
+<tr><td><code>Lesson</code></td><td><code>title</code>, <code>description</code></td><td><code>course</code> → Course</td></tr>
+<tr><td><code>Assignment</code></td><td><code>title</code>, <code>description</code>, <code>due_date</code></td><td><code>lesson</code> → Lesson, <code>course</code> → Course</td></tr>
+<tr><td><code>Enrollment</code></td><td><code>enrollment_date</code> (<code>auto_now_add</code>)</td><td><code>student</code>, <code>course</code></td></tr>
+<tr><td><code>Submission</code></td><td><code>content</code>, <code>submitted_at</code> (<code>auto_now_add</code>)</td><td><code>assignment</code>, <code>student</code></td></tr>
+<tr><td><code>Results</code></td><td><code>score</code> (float), <code>feedback</code></td><td><code>submission</code> → <strong>OneToOne</strong></td></tr>
+</table>
+
+<p>Every foreign key is <code>on_delete=models.CASCADE</code>. Deleting a teacher takes
+their courses, which takes those courses' lessons and assignments, which takes the
+submissions against them, which takes the grades. The confirm dialog on the Teachers page
+says so in as many words: <em>"Their courses go too. This cannot be undone."</em></p>
+
+<h2>14.4 The four details that shape the rest of the code</h2>
+
+<h3>1. <code>Results.submission</code> is one-to-one</h3>
+
+<p>A submission can be graded exactly once; a second attempt is a 400 from the database
+constraint. That is what makes <code>?ungraded=true</code> possible: it maps to
+<code>results__isnull=True</code>, which is the database answering "nothing points back at
+this row yet". The Results page builds its dropdown from exactly that query
+(<a href="#ch33">chapter 33</a>).</p>
+
+<h3>2. <code>Assignment</code> points at both a course and a lesson</h3>
+
+<p>Redundant on paper — a lesson already knows its course — and nothing enforces that the
+two agree. The frontend compensates by filtering the lesson dropdown down to the chosen
+course's lessons, but the API would happily accept a mismatched pair.</p>
+
+<h3>3. Nothing links a <code>Student</code> row to a <code>User</code> login</h3>
+
+<p>They are two separate tables with no foreign key between them. The seeder ties them
+together by email as a convention, and nothing else does. This is the single most important
+structural fact in the project, and the reason for the odd shape of the submission
+permission: a student may <code>POST</code> a submission but not edit or delete one, because
+the server has no way to tell whose work it is.</p>
+
+<h3>4. Two <code>auto_now_add</code> fields</h3>
+
+<p><code>Enrollment.enrollment_date</code> and <code>Submission.submitted_at</code> are set
+by the database on insert and cannot be supplied by the API. The seeder works around this by
+inserting the rows and then rewriting the dates with <code>bulk_update</code>, which is why
+seeded enrollments spread over two years instead of all landing on today.</p>
+
+<h2>14.5 <code>__str__</code></h2>
+
+<p>Every model has one, and they are what the Django admin dropdowns show. A couple reach
+across relations — <code>Results.__str__</code> reads
+<code>self.submission.student.name</code> — so listing results in the admin without
+<code>select_related</code> is one query per row. That is only the admin; the API's
+<code>ResultsListCreateView</code> does select the relations.</p>
+
+<h1 id="ch15">15. <code>serializers.py</code></h1>
+
+<p class="lead">Eleven serializers. Four are about accounts and passwords and carry all the
+validation; the other seven are thin wrappers over a model, plus the read-only name fields
+that stop the browser having to do joins.</p>
+
+<h2>15.1 <code>RegisterSerializer</code></h2>
+
+<p>A <code>ModelSerializer</code> over <code>User</code> with three extra fields:
+<code>phone</code> (write-only, lands on the Profile), <code>first_name</code> and
+<code>email</code> made required, and <code>role</code> as a <code>ChoiceField</code>
+defaulting to <code>student</code>.</p>
+
+<table class="tight">
+<tr><th>Validator</th><th>Rejects</th></tr>
+<tr><td><code>validate_phone</code></td><td>A phone already on some other Profile</td></tr>
+<tr><td><code>validate_username</code></td><td>A username already taken</td></tr>
+<tr><td><code>validate_password</code></td><td>Anything Django's four password validators refuse</td></tr>
+</table>
+
+<p><code>create()</code> is wrapped in <code>@transaction.atomic</code> so a failure between
+making the <code>User</code> and making the <code>Profile</code> cannot leave a
+profile-less account behind. <code>to_representation()</code> adds the role to the response
+so the caller can see what was applied.</p>
+
+<div class="note">
+<p>Letting the caller choose <code>role</code> is only safe because the view above it is
+<code>IsAdmin</code>. If that permission class were ever relaxed, this field would become a
+privilege-escalation hole.</p>
+</div>
+
+<h2>15.2 <code>LoginSerializer</code></h2>
+
+<p>Two fields, <code>phone</code> and <code>password</code>, both required. No validation
+beyond presence — the view does the lookup and the password check itself, and answers with a
+deliberately vague <code>"Invalid phone or password"</code> either way so the endpoint cannot
+be used to find out which numbers are registered.</p>
+
+<h2>15.3 <code>ProfileUpdateSerializer</code></h2>
+
+<p>A plain <code>Serializer</code>, not a <code>ModelSerializer</code>, because it writes to
+two tables. It accepts exactly four optional fields: <code>first_name</code>,
+<code>last_name</code>, <code>email</code>, <code>phone</code>.</p>
+
+<p>What is deliberately <em>not</em> on the list is the interesting part:</p>
+
+<table class="tight">
+<tr><th>Field</th><th>Why it is excluded</th></tr>
+<tr><td><code>role</code></td><td>Changing your own would be a self-promotion. Admins only, from Django admin.</td></tr>
+<tr><td><code>username</code></td><td>It is how an admin finds you, and it is not a credential, so there is nothing to gain.</td></tr>
+<tr><td><code>password</code></td><td>Has its own endpoint, because it needs the old password first.</td></tr>
+</table>
+
+<p>Because DRF ignores unknown keys, sending <code>{"role": "admin"}</code> here succeeds
+with a 200 and changes nothing. The smoke test checks exactly that, then re-reads the profile
+to confirm the role did not move.</p>
+
+<p><code>validate_phone</code> refuses a blank (it is the login credential) and refuses one
+that belongs to another account. <code>validate_email</code> refuses a duplicate too, with a
+different reason: password reset looks an account up by email, so two accounts sharing one
+would make that ambiguous.</p>
+
+<h2>15.4 <code>ChangePasswordSerializer</code></h2>
+
+<p>Three write-only fields and four rules:</p>
+
+<ol>
+<li><code>current_password</code> must actually be the current one. Knowing the old password
+is what makes the account yours to change; without it, a borrowed browser tab would be
+enough to take it.</li>
+<li>The two new passwords must match.</li>
+<li>The new one must differ from the old one.</li>
+<li>The new one must pass Django's validators, given the user for the similarity check.</li>
+</ol>
+
+<h2>15.5 The password-reset pair</h2>
+
+<p><code>PasswordResetRequestSerializer</code> is one email field.
+<code>PasswordResetConfirmSerializer</code> does the real work in
+<code>validate()</code>: match the two passwords, base64-decode the <code>uid</code> into a
+primary key, load an active user, check the token with
+<code>default_token_generator</code>, then run the password validators. It stashes the
+resolved user in <code>attrs["user"]</code> so the view does not repeat the lookup.</p>
+
+<p>Every failure path answers 400 with a field-shaped error — <code>uid</code> for a
+malformed link, <code>token</code> for an expired or forged one — so the frontend can show
+something specific.</p>
+
+<h2>15.6 The seven resource serializers</h2>
+
+<p>These are almost all <code>ModelSerializer</code> with an explicit <code>fields</code>
+list. The one thing they add is a <strong>read-only name beside every id</strong>:</p>
+
+<table>
+<tr><th>Serializer</th><th>Model fields</th><th>Added read-only</th></tr>
+<tr><td><code>TeacherSerializer</code></td><td>id, name, email, subject, is_active</td><td>—</td></tr>
+<tr><td><code>StudentSerializer</code></td><td>id, name, email, enrollment_date, is_active, roll_number</td><td>—</td></tr>
+<tr><td><code>CourseSerializer</code></td><td>id, title, description, teacher</td><td><code>teacher_name</code></td></tr>
+<tr><td><code>LessonSerializer</code></td><td>id, title, description, course</td><td><code>course_title</code></td></tr>
+<tr><td><code>AssignmentSerializer</code></td><td>id, title, description, lesson, due_date, course</td><td><code>course_title</code>, <code>lesson_title</code></td></tr>
+<tr><td><code>EnrollmentSerializer</code></td><td>id, student, course, enrollment_date</td><td><code>student_name</code>, <code>course_title</code></td></tr>
+<tr><td><code>SubmissionSerializer</code></td><td>id, assignment, student, submitted_at, content</td><td><code>student_name</code>, <code>assignment_title</code></td></tr>
+<tr><td><code>ResultSerializer</code></td><td>id, submission, score, feedback</td><td><code>student_name</code>, <code>assignment_title</code></td></tr>
+</table>
+
+<p>They are declared with <code>source</code>, so a single line reaches through a relation:</p>
+
+<pre class="py"><code>class ResultSerializer(serializers.ModelSerializer):
+    # Two relations deep: a result points at a submission, which points at the
+    # student and the assignment. "Submission #4" on its own says nothing.
+    student_name = serializers.CharField(
+        source='submission.student.name', read_only=True,
+    )
+    assignment_title = serializers.CharField(
+        source='submission.assignment.title', read_only=True,
+    )</code></pre>
+
+<h3>Why the names are sent at all</h3>
+
+<p>The alternative was for the browser to download every teacher, every course and every
+student and do the join itself. That worked while lists came back whole. It stopped working
+once they were paginated, for two separate reasons: a page of ten rows should not cost eight
+thousand, and <strong>a lookup list that is itself paginated cannot answer for a row on page
+40</strong>. The joins are already in the queryset via <code>select_related</code>, so
+sending the names costs nothing extra.</p>
+
+<div class="note">
+<p>Note the class name asymmetry: it is <code>ResultSerializer</code> (singular) over a model
+called <code>Results</code> (plural), served at <code>/api/results/</code>. The other seven
+are singular throughout. Nothing depends on this; it is just a thing to know before you
+grep.</p>
+</div>
+
+<h1 id="ch16">16. <code>permissions.py</code> — the security rules</h1>
+
+<p class="lead">Ninety lines, and the single most important file in the project. Everything
+else is plumbing; this is the part that says no.</p>
+
+<h2>16.1 The rule in one table</h2>
+
+<table>
+<tr><th>Resource</th><th class="center">Admin</th><th class="center">Teacher</th><th class="center">Student</th><th>Class</th></tr>
+<tr><td>Teacher, Student records</td><td class="center yes">write</td><td class="center">read</td><td class="center">read</td><td><code>AdminWrites</code></td></tr>
+<tr><td>Course, Lesson, Assignment</td><td class="center yes">write</td><td class="center yes">write</td><td class="center">read</td><td><code>TeachingStaffWrites</code></td></tr>
+<tr><td>Enrollment, Results</td><td class="center yes">write</td><td class="center yes">write</td><td class="center">read</td><td><code>TeachingStaffWrites</code></td></tr>
+<tr><td>Submission</td><td class="center yes">write</td><td class="center yes">write</td><td class="center"><span class="badge">POST only</span></td><td><code>SubmissionWrites</code></td></tr>
+<tr><td>Create an account</td><td class="center yes">yes</td><td class="center no">no</td><td class="center no">no</td><td><code>IsAdmin</code></td></tr>
+<tr><td>Own profile / password</td><td class="center yes">yes</td><td class="center yes">yes</td><td class="center yes">yes</td><td><code>IsAuthenticated</code></td></tr>
+</table>
+
+<p>Reading is open to every signed-in account. Anonymous callers can reach exactly four
+endpoints: login, password reset request, password reset confirm — and nothing else.</p>
+
+<h2>16.2 <code>role_of(user)</code></h2>
+
+<pre class="py"><code>def role_of(user):
+    if not user or not user.is_authenticated:
+        return None
+    if user.is_superuser:
+        return Profile.ADMIN
+    profile = Profile.objects.filter(user=user).only("role").first()
+    if profile is None:
+        return Profile.STUDENT
+    return profile.role</code></pre>
+
+<p>Four cases, in order, and each is a decision:</p>
+
+<ul>
+<li><strong>Anonymous</strong> → <code>None</code>, which matches no role and so is refused
+everywhere.</li>
+<li><strong>Superuser</strong> → admin, without looking at the database.
+<code>createsuperuser</code> is therefore always a way back into a system with no admins
+left.</li>
+<li><strong>No Profile row</strong> → student. The least privilege available, rather than an
+exception. An account made in the shell with <code>User.objects.create_user()</code> falls
+here.</li>
+<li><strong>Otherwise</strong> → whatever the column says. <code>.only("role")</code> keeps
+it to one small query.</li>
+</ul>
+
+<div class="note">
+<p>This runs on every write request, so it is one extra query per write. Reads only pay for
+it on <code>/login/</code> and <code>/profile/</code>, since <code>SAFE_METHODS</code> short
+-circuits before the lookup.</p>
+</div>
+
+<h2>16.3 The five classes</h2>
+
+<h3><code>IsAdmin</code></h3>
+
+<p>Admins only, <em>for every method including GET</em>. Used on registration, because
+accounts are handed out by an admin rather than claimed by whoever finds the URL. Message:
+<em>"Only an admin can create accounts."</em></p>
+
+<h3><code>RoleWritePermission</code> — the base</h3>
+
+<pre class="py"><code>class RoleWritePermission(BasePermission):
+    roles_that_may_write = ()
+
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if request.method in SAFE_METHODS:
+            return True
+        return role_of(request.user) in self.roles_that_may_write</code></pre>
+
+<p>Not authenticated → refused. <code>GET</code>, <code>HEAD</code>, <code>OPTIONS</code> →
+allowed. Anything else → the role has to be on the list. Subclasses set one tuple and one
+message.</p>
+
+<h3><code>AdminWrites</code> and <code>TeachingStaffWrites</code></h3>
+
+<p>One tuple each: <code>(ADMIN,)</code> and <code>(ADMIN, TEACHER)</code>. Between them
+they cover seven of the eight resources.</p>
+
+<h3><code>SubmissionWrites</code></h3>
+
+<pre class="py"><code>class SubmissionWrites(RoleWritePermission):
+    roles_that_may_write = (Profile.ADMIN, Profile.TEACHER)
+
+    def has_permission(self, request, view):
+        if (request.method == "POST"
+                and request.user and request.user.is_authenticated
+                and role_of(request.user) == Profile.STUDENT):
+            return True
+        return super().has_permission(request, view)</code></pre>
+
+<p>The one asymmetric rule in the project. A student may hand work in and nothing else. The
+reason is structural, not a policy choice: <strong>nothing links a <code>Student</code> row
+to a login account</strong>, so on a <code>PATCH</code> or <code>DELETE</code> the server
+cannot tell whether the submission belongs to the caller. Handing in is the one write that
+is safe without that link — the worst case is a spurious row, not a tampered-with grade.</p>
+
+<div class="warn">
+<p>The gap that leaves: a student can <code>POST</code> a submission with any
+<code>student</code> id in the body, including someone else's. Closing it properly means
+giving <code>Student</code> a foreign key to <code>User</code> and overriding
+<code>perform_create</code> to ignore the body's value. See
+<a href="#ch45">chapter 45</a>.</p>
+</div>
+
+<h2>16.4 Where the classes are attached</h2>
+
+<table class="tight">
+<tr><th>Permission class</th><th>Views</th></tr>
+<tr><td><code>IsAdmin</code></td><td><code>RegisterView</code></td></tr>
+<tr><td><code>IsAuthenticated</code></td><td><code>ProtectedView</code>, <code>ChangePasswordView</code></td></tr>
+<tr><td><code>AllowAny</code></td><td><code>LoginView</code>, <code>PasswordResetRequestView</code>, <code>PasswordResetConfirmView</code></td></tr>
+<tr><td><code>AdminWrites</code></td><td>Teacher ×2, Student ×2</td></tr>
+<tr><td><code>TeachingStaffWrites</code></td><td>Course ×2, Enrollment ×2, Lesson ×2, Assignment ×2, Results ×2</td></tr>
+<tr><td><code>SubmissionWrites</code></td><td>Submission ×2</td></tr>
+</table>
+
+<p>"×2" is the list view and the detail view. Both get the same class — forgetting the detail
+route is the classic way to leave a hole, and the smoke test checks every detail route
+separately for exactly that reason.</p>
+
+<h2>16.5 The mirror in the browser</h2>
+
+<p><span class="filepath">frontend/src/permissions.js</span> encodes the same table in
+JavaScript and is used only to decide which buttons to draw. A mistake there is a cosmetic
+bug, not a hole. Change one file, change the other.</p>
+
+<figure>
+  <img src="screenshots/student-view.png" alt="The same page as a student">
+  <figcaption>The Students page signed in as a student: no Add button, no row actions,
+  and no Accounts link in the sidebar. The API refuses those calls too.</figcaption>
+</figure>
+
+<h1 id="ch17">17. <code>filters.py</code></h1>
+
+<p class="lead">DRF ships a search filter and an ordering filter but not a field filter, and
+<code>django-filter</code> is a dependency this project does not have. This file is the
+missing piece, in about 130 lines.</p>
+
+<h2>17.1 How a view declares its filters</h2>
+
+<pre class="py"><code>class AssignmentListCreateView(generics.ListCreateAPIView):
+    filter_fields = {
+        "course":   "course",             # ?course=3
+        "lesson":   "lesson",             # ?lesson=7
+        "due_from": "due_date__gte",      # ?due_from=2026-01-01
+        "due_to":   "due_date__lte",      # ?due_to=2026-03-31
+    }</code></pre>
+
+<p><strong>The key is the query parameter the caller types; the value is the ORM lookup it
+turns into.</strong> Anything not on the dictionary is ignored — there is no way to filter on
+a column the view did not name. Ranges are two parameters against one column, spelled with
+<code>__gte</code> and <code>__lte</code>.</p>
+
+<h2>17.2 <code>field_behind(model, lookup)</code></h2>
+
+<p>Walks a lookup path and returns the model field at the end of it, so the value can be
+coerced to the right Python type.</p>
+
+<pre class="py"><code>parts = lookup.split("__")
+for index, part in enumerate(parts):
+    try:
+        field = model._meta.get_field(part)
+    except FieldDoesNotExist:
+        break                      # the rest is a lookup (gte, icontains, in)
+    if field.is_relation and index &lt; len(parts) - 1:
+        model = field.related_model</code></pre>
+
+<table class="tight">
+<tr><th>Lookup</th><th>Walk</th><th>Field found</th></tr>
+<tr><td><code>is_active</code></td><td>one hop</td><td><code>BooleanField</code></td></tr>
+<tr><td><code>due_date__lte</code></td><td><code>due_date</code>, then <code>lte</code> is not a field → stop</td><td><code>DateTimeField</code></td></tr>
+<tr><td><code>submission__student</code></td><td>hop the relation, then <code>student</code></td><td><code>ForeignKey</code></td></tr>
+<tr><td><code>results__isnull</code></td><td><code>results</code> is the reverse relation, <code>isnull</code> is a lookup</td><td>the reverse relation</td></tr>
+</table>
+
+<h2>17.3 <code>coerce(field, lookup, raw, param)</code></h2>
+
+<p>Query-string values arrive as strings. Passing them through would be a real bug rather
+than a cosmetic one: <code>?is_active=false</code> would filter on the non-empty string
+<code>"false"</code>, which is truthy, and so would match <em>every</em> row. The coercion
+rules, in the order they are tried:</p>
+
+<table>
+<tr><th>Condition</th><th>Becomes</th></tr>
+<tr><td>Lookup ends in <code>__isnull</code>, or the field is a <code>BooleanField</code></td><td><code>True</code> for <code>true/1/yes/on</code>, <code>False</code> for <code>false/0/no/off</code>, else 400</td></tr>
+<tr><td>The field is a relation</td><td><code>int</code> — a foreign key is filtered by the id on the other end</td></tr>
+<tr><td><code>IntegerField</code></td><td><code>int</code></td></tr>
+<tr><td><code>FloatField</code> / <code>DecimalField</code></td><td><code>float</code></td></tr>
+<tr><td><code>DateField</code> / <code>DateTimeField</code></td><td>left as a string — Django parses ISO dates itself and complains if it cannot</td></tr>
+<tr><td>anything else</td><td>the stripped string</td></tr>
+</table>
+
+<p>The <code>__isnull</code> test is checked <em>before</em> the relation test, and on purpose:
+without it, <code>results__isnull</code> would be seen as a relation and <code>"true"</code>
+would be parsed as an id, raising <code>ValueError</code>.</p>
+
+<p>A value that cannot be coerced becomes a 400 naming the offending parameter, rather than a
+500 out of the database driver:</p>
+
+<pre class="json"><code>{"is_active": "'maybe' is not a valid value for this filter."}</code></pre>
+
+<h2>17.4 <code>FieldFilterBackend.filter_queryset</code></h2>
+
+<ol>
+<li>Read <code>view.filter_fields</code>. Not declared? Return the queryset untouched — which
+is why the detail routes and the auth views are unaffected by this backend running globally.</li>
+<li>For each declared parameter, read it off the query string. <strong>Missing and empty mean
+the same thing</strong> — the dropdown is on "Any" — so both are skipped. Filtering on
+<code>""</code> would match nothing, which is the opposite of what the user meant.</li>
+<li>Coerce each value, collect into one dict, apply as a single <code>queryset.filter(**conditions)</code>.</li>
+<li>Wrap that call: an unparseable date lands as a Django <code>ValidationError</code> here
+rather than in <code>coerce()</code>, and is turned into a 400.</li>
+</ol>
+
+<p>There is also a <code>get_schema_operation_parameters()</code> so the filters would show
+up in a generated OpenAPI schema. Nothing in the project generates one today.</p>
+
+<h1 id="ch18">18. <code>pagination.py</code></h1>
+
+<p>One class, forty lines, and the reason every list response is an object rather than an
+array.</p>
+
+<pre class="py"><code>class StandardPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 200
+
+    def get_paginated_response(self, data):
+        return Response({
+            "count": self.page.paginator.count,
+            "page": self.page.number,
+            "page_size": self.get_page_size(self.request),
+            "total_pages": self.page.paginator.num_pages,
+            "next": self.get_next_link(),
+            "previous": self.get_previous_link(),
+            "results": data,
+        })</code></pre>
+
+<table class="tight">
+<tr><th>Key</th><th>Meaning</th></tr>
+<tr><td><code>count</code></td><td>Rows matching <strong>after filtering</strong>, not rows on this page. The table footer and the dashboard tiles both read this.</td></tr>
+<tr><td><code>page</code>, <code>total_pages</code></td><td>Not in DRF's default envelope. Without them the frontend would have to parse the <code>next</code> URL to work out where it is.</td></tr>
+<tr><td><code>next</code>, <code>previous</code></td><td>Absolute URLs, or <code>null</code>. <code>listAll()</code> in <code>api.js</code> walks <code>next</code> until it is null.</td></tr>
+<tr><td><code>results</code></td><td>The rows.</td></tr>
+</table>
+
+<p>Ten rows fits a laptop screen without scrolling the page. <code>?page_size=</code> raises
+it, capped at 200 so that one request cannot ask for the whole table and undo the point of
+paginating it. That cap is duplicated in <code>api.js</code> as <code>BIGGEST_PAGE</code>,
+which is the page size <code>listAll()</code> uses when walking.</p>
+
+<div class="note">
+<p>Asking for a page past the end is a 404 with the message <em>"Invalid page"</em>. The
+frontend catches exactly that and steps back one page — see <code>stepBackAfter</code> in
+<a href="#ch29">chapter 29</a> — because it happens naturally when you delete the last row on
+the last page.</p>
+</div>
+
+<h1 id="ch19">19. <code>views.py</code></h1>
+
+<p class="lead">Six auth views and sixteen resource views. The resource views are almost
+entirely declarative: a queryset, a serializer, a permission class, and four attributes that
+tell the filter backends what to do.</p>
+
+<h2>19.1 <code>blacklist_user_tokens(user)</code></h2>
+
+<pre class="py"><code>tokens = OutstandingToken.objects.filter(user=user)
+for token in tokens:
+    BlacklistedToken.objects.get_or_create(token=token)</code></pre>
+
+<p>Called after a password change and after a password reset. It blacklists every
+<em>refresh</em> token the user has been issued. The whole body is inside a bare
+<code>try/except Exception: pass</code>, so a missing blacklist app cannot break a password
+change.</p>
+
+<div class="warn">
+<p>This does <strong>not</strong> revoke the access token already in the caller's hands. JWTs
+are verified by signature, not looked up in a table, so an issued access token stays valid
+until it expires — up to eight hours here. Both places that call this therefore also make the
+frontend sign the user out. That is a real mitigation, not a complete one: a token already
+copied out of <code>localStorage</code> keeps working.</p>
+</div>
+
+<h2>19.2 The auth views</h2>
+
+<table>
+<tr><th>View</th><th>Route</th><th>Permission</th><th>Behaviour</th></tr>
+<tr><td><code>RegisterView</code></td><td><code>POST /register/</code></td><td><code>IsAdmin</code></td><td><code>CreateAPIView</code> over <code>RegisterSerializer</code>. 401 anonymous, 403 teacher/student.</td></tr>
+<tr><td><code>LoginView</code></td><td><code>POST /login/</code></td><td><code>AllowAny</code></td><td>Look up the Profile by phone, check the password, return tokens</td></tr>
+<tr><td><code>ProtectedView</code></td><td><code>GET|PATCH /profile/</code></td><td><code>IsAuthenticated</code></td><td>Your own account, both ways</td></tr>
+<tr><td><code>ChangePasswordView</code></td><td><code>POST /change-password/</code></td><td><code>IsAuthenticated</code></td><td>Needs the old password; blacklists refresh tokens</td></tr>
+<tr><td><code>PasswordResetRequestView</code></td><td><code>POST /password-reset/</code></td><td><code>AllowAny</code></td><td>Mails a link; always answers 200</td></tr>
+<tr><td><code>PasswordResetConfirmView</code></td><td><code>POST /password-reset-confirm/</code></td><td><code>AllowAny</code></td><td>Validates uid+token, sets the password, blacklists</td></tr>
+</table>
+
+<h3><code>LoginView</code> in full</h3>
+
+<pre class="py"><code>try:
+    profile = Profile.objects.get(phone=phone)
+    user = profile.user
+except Profile.DoesNotExist:
+    return Response({'error': 'Invalid phone or password'}, status=400)
+
+if not user.check_password(password):
+    return Response({'error': 'Invalid phone or password'}, status=400)
+
+tokens = get_tokens_for_user(user)
+return Response({
+    'message': 'Login successful',
+    'user_id': user.id,
+    'username': user.username,
+    'role': role_of(user),
+    'tokens': tokens,
+})</code></pre>
+
+<p>Three things to notice. The error message is identical for an unknown phone and a wrong
+password, so the endpoint does not disclose which numbers are registered. The tokens are
+<strong>nested under <code>tokens</code></strong> — it is <code>data.tokens.access</code>,
+not <code>data.access</code>, which is the single most common mistake when writing a client
+against this API. And <code>role</code> is included so the frontend can decide which buttons
+to draw; it is not what enforces anything.</p>
+
+<h3><code>ProtectedView</code></h3>
+
+<p><code>GET</code> returns a flat user object including the phone from the Profile and the
+role from <code>role_of()</code>. <code>PATCH</code> runs
+<code>ProfileUpdateSerializer</code> and then re-reads the user from the database before
+answering. It only ever touches <code>request.user</code>, so there is no way to aim it at
+somebody else's account.</p>
+
+<h3>The password reset pair</h3>
+
+<p>The request view answers <code>200</code> with <em>"If an account exists with this email,
+a password reset link has been sent."</em> whether or not the address matches anything. Only
+if a user is found does it build a link and send mail:</p>
+
+<pre class="py"><code>uid = urlsafe_base64_encode(force_bytes(user.pk))
+token = default_token_generator.make_token(user)
+reset_link = f"{settings.FRONTEND_PASSWORD_RESET_URL}?uid={uid}&amp;token={token}"</code></pre>
+
+<p>In development that mail is printed to the terminal running <code>runserver</code>. Note
+<code>fail_silently=False</code>: with a real SMTP backend misconfigured, this endpoint will
+raise rather than lie about having sent something.</p>
+
+<h2>19.3 The resource views</h2>
+
+<p>Eight pairs, all built from two DRF generics:</p>
+
+<pre class="py"><code>class TeacherListCreateView(generics.ListCreateAPIView):        # GET list, POST create
+class TeacherRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+                                                               # GET, PUT, PATCH, DELETE</code></pre>
+
+<p>The list view of each pair declares four attributes, and those four are the entire
+difference between one resource and the next:</p>
+
+<table class="tight">
+<tr><th>Attribute</th><th>Read by</th><th>What it controls</th></tr>
+<tr><td><code>search_fields</code></td><td><code>SearchFilter</code></td><td>What <code>?search=</code> looks through (case-insensitive contains)</td></tr>
+<tr><td><code>filter_fields</code></td><td><code>FieldFilterBackend</code></td><td>Which <code>?param=</code> filters exist and what they map to</td></tr>
+<tr><td><code>ordering_fields</code></td><td><code>OrderingFilter</code></td><td>The whitelist for <code>?ordering=</code>; stops a caller sorting on a column that is not on the table</td></tr>
+<tr><td><code>ordering</code></td><td><code>OrderingFilter</code></td><td>The default sort. <strong>Paging needs a stable order</strong>, or a row can appear on two pages or on neither.</td></tr>
+</table>
+
+<h3>Every view's declarations, in one table</h3>
+
+<table>
+<tr><th>Resource</th><th>Queryset</th><th><code>search_fields</code></th><th><code>filter_fields</code></th></tr>
+<tr><td>Teacher</td><td>plain</td><td>name, email, subject</td><td><code>is_active</code>, <code>subject</code> (icontains)</td></tr>
+<tr><td>Student</td><td>plain</td><td>name, email, roll_number</td><td><code>is_active</code>, <code>enrolled_from</code>, <code>enrolled_to</code></td></tr>
+<tr><td>Course</td><td><code>select_related("teacher")</code></td><td>title, description, teacher__name</td><td><code>teacher</code></td></tr>
+<tr><td>Lesson</td><td><code>select_related("course")</code></td><td>title, description, course__title</td><td><code>course</code></td></tr>
+<tr><td>Assignment</td><td><code>select_related("course", "lesson")</code></td><td>title, description, course__title, lesson__title</td><td><code>course</code>, <code>lesson</code>, <code>due_from</code>, <code>due_to</code></td></tr>
+<tr><td>Enrollment</td><td><code>select_related("student", "course")</code></td><td>student__name, student__roll_number, course__title</td><td><code>student</code>, <code>course</code>, <code>enrolled_from</code>, <code>enrolled_to</code></td></tr>
+<tr><td>Submission</td><td><code>select_related("assignment", "student")</code></td><td>content, student__name, assignment__title</td><td><code>assignment</code>, <code>student</code>, <code>course</code>, <code>submitted_from</code>, <code>submitted_to</code>, <code>ungraded</code></td></tr>
+<tr><td>Results</td><td><code>select_related("submission", "submission__student", "submission__assignment")</code></td><td>feedback, submission__student__name, submission__assignment__title</td><td><code>submission</code>, <code>student</code>, <code>assignment</code>, <code>score_min</code>, <code>score_max</code></td></tr>
+</table>
+
+<p>All eight default to <code>ordering = ["id"]</code>.</p>
+
+<h3>The two clever filters</h3>
+
+<p><strong><code>"course": "assignment__course"</code> on submissions.</strong> A submission
+has no course of its own; it borrows the one its assignment belongs to. That one line is what
+makes the Submissions page's Course dropdown work.</p>
+
+<p><strong><code>"ungraded": "results__isnull"</code> on submissions.</strong> Because
+<code>Results.submission</code> is one-to-one, a submission with nothing pointing back at it
+is one nobody has marked. <code>?ungraded=true</code> is the list the "new result" dropdown is
+built from. Asking the database that is far cheaper than sending 7,665 submissions and 4,630
+results to the browser for it to work out the difference.</p>
+
+<div class="gap">
+<p>The eight <code>RetrieveUpdateDestroy</code> views use a plain queryset with no
+<code>select_related</code>. That is one extra query per relation on a single-row fetch —
+harmless in practice, and inconsistent with the list views above them.</p>
+</div>
+
+<h1 id="ch20">20. <code>urls.py</code> — the route table</h1>
+
+<p>Twenty-two paths, all under <code>/api/</code>. Six for accounts, then eight pairs.</p>
+
+<table class="tight">
+<tr><th>Path</th><th>Name</th><th>View</th></tr>
+<tr><td><code>login/</code></td><td>login</td><td><code>LoginView</code></td></tr>
+<tr><td><code>register/</code></td><td>register</td><td><code>RegisterView</code></td></tr>
+<tr><td><code>profile/</code></td><td>protected</td><td><code>ProtectedView</code></td></tr>
+<tr><td><code>change-password/</code></td><td>change-password</td><td><code>ChangePasswordView</code></td></tr>
+<tr><td><code>password-reset/</code></td><td>—</td><td><code>PasswordResetRequestView</code></td></tr>
+<tr><td><code>password-reset-confirm/</code></td><td>—</td><td><code>PasswordResetConfirmView</code></td></tr>
+<tr><td><code>teacher/</code> · <code>teacher/&lt;int:pk&gt;/</code></td><td>teacher-list · teacher-detail</td><td>Teacher pair</td></tr>
+<tr><td><code>student/</code> · <code>student/&lt;int:pk&gt;/</code></td><td>student-list · student-detail</td><td>Student pair</td></tr>
+<tr><td><code>course/</code> · <code>course/&lt;int:pk&gt;/</code></td><td>course-list · course-detail</td><td>Course pair</td></tr>
+<tr><td><code>enrollment/</code> · <code>enrollment/&lt;int:pk&gt;/</code></td><td>enrollment-list · enrollment-detail</td><td>Enrollment pair</td></tr>
+<tr><td><code>lesson/</code> · <code>lesson/&lt;int:pk&gt;/</code></td><td>lesson-list · lesson-detail</td><td>Lesson pair</td></tr>
+<tr><td><code>assignment/</code> · <code>assignment/&lt;int:pk&gt;/</code></td><td>assignment-list · assignment-detail</td><td>Assignment pair</td></tr>
+<tr><td><code>submission/</code> · <code>submission/&lt;int:pk&gt;/</code></td><td>submission-list · submission-detail</td><td>Submission pair</td></tr>
+<tr><td><code>results/</code> · <code>results/&lt;int:pk&gt;/</code></td><td>result-list · result-detail</td><td>Results pair</td></tr>
+</table>
+
+<div class="note">
+<p><strong>Seven of the eight resources are singular in the URL; <code>results</code> is
+plural.</strong> <code>api.js</code> carries a comment about it for the same reason this book
+does: it is the one path you will get wrong from memory.</p>
+</div>
+
+<p>Every path has a trailing slash and Django's <code>APPEND_SLASH</code> is on by default,
+so a request to <code>/api/student</code> is redirected. A redirect on a
+<code>POST</code> loses the body, so always include the slash.</p>
+
+<h1 id="ch21">21. <code>admin.py</code></h1>
+
+<p>All nine models are registered with the <code>@admin.register</code> decorator. Most just
+set <code>list_display</code> and a search or filter list. One does something load-bearing:</p>
+
+<pre class="py"><code>@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'phone', 'role']
+    list_editable = ['role']
+    list_filter = ['role']
+    search_fields = ['user__username', 'phone']</code></pre>
+
+<p><code>list_editable = ['role']</code> means role is a dropdown straight from the changelist,
+because promoting someone who has just registered is the one admin job this app really
+needs. <strong>The Django admin is the only place a role can be changed.</strong> The API
+refuses it from <code>/profile/</code>, and the React app has no screen for it.</p>
+
+<h1 id="ch22">22. <code>migrations/</code></h1>
+
+<table>
+<tr><th>Migration</th><th>Generated on</th><th>What it does</th></tr>
+<tr><td><code>0001_initial</code></td><td>Django 6.0.6</td><td>Creates <code>Student</code>, <code>Teacher</code>, <code>Profile</code> (without <code>role</code>)</td></tr>
+<tr><td><code>0002_course_enrollment_…</code></td><td>Django 6.0.6</td><td>Creates the other six: Course, Enrollment, Lesson, Assignment, Submission, Results</td></tr>
+<tr><td><code>0003_profile_role</code></td><td>Django 5.2.7</td><td>Adds <code>Profile.role</code>, <code>default="student"</code></td></tr>
+<tr><td><code>0004_existing_accounts_become_admins</code></td><td>hand-written</td><td>A data migration: <code>Profile.objects.update(role="admin")</code></td></tr>
+</table>
+
+<h2>22.1 The data migration is the interesting one</h2>
+
+<pre class="py"><code>def make_existing_accounts_admins(apps, schema_editor):
+    """Everyone who already had an account keeps full access."""
+    Profile = apps.get_model("backend", "Profile")
+    Profile.objects.update(role="admin")
+
+def back_to_student(apps, schema_editor):
+    Profile = apps.get_model("backend", "Profile")
+    Profile.objects.update(role="student")</code></pre>
+
+<p>New accounts default to <code>student</code>, but the people who registered before roles
+existed could do everything, and locking them out on upgrade would be a surprise. So they are
+promoted once, here. It is written with a reverse function, so
+<code>migrate backend 0003</code> is not a dead end.</p>
+
+<p>It uses <code>apps.get_model()</code> rather than importing <code>Profile</code> directly —
+the historical model, frozen as of this migration. Importing the live model would break the
+moment a later migration changed the table.</p>
+
+<div class="warn">
+<p>On a database that already has real users, this migration makes <strong>every existing
+account an admin</strong>. That is correct for the upgrade it was written for and wrong for
+almost anything else. Check who exists before running it against data you did not seed.</p>
+</div>
+
+<h1 id="ch23">23. The seeder</h1>
+
+<p class="lead"><span class="filepath">management/commands/seed_data.py</span> — 488 lines —
+and <span class="filepath">seed_catalog.py</span> — 470 lines of content it draws on. Between
+them they turn an empty database into something worth clicking through.</p>
+
+<h2>23.1 <code>seed_catalog.py</code>: the content, not the logic</h2>
+
+<p>Kept in a separate file so the command stays readable. Everything in it is invented, but
+shaped like a real Bangladeshi online-course provider's data so the UI looks plausible.</p>
+
+<table class="tight">
+<tr><th>Constant</th><th>Size</th><th>What it is</th></tr>
+<tr><td><code>FIRST_NAMES</code></td><td>58</td><td>Given names. Crossed with the surnames to build many distinct people from two short lists.</td></tr>
+<tr><td><code>LAST_NAMES</code></td><td>29</td><td>Surnames. 58 × 29 = 1,682 possible people.</td></tr>
+<tr><td><code>COURSE_CATALOG</code></td><td>16</td><td>Each entry: title, subject, description, and a list of <code>(lesson title, lesson description)</code> tuples. 102 lessons in total.</td></tr>
+<tr><td><code>ASSIGNMENT_BRIEFS</code></td><td>~5</td><td>Generic briefs, cycled by lesson index.</td></tr>
+<tr><td><code>SUBMISSION_NOTES</code></td><td>~6</td><td>Templates with a <code>{topic}</code> slot filled from the assignment title.</td></tr>
+<tr><td><code>FEEDBACK_BY_BAND</code></td><td>4 bands</td><td><code>high</code> / <code>good</code> / <code>pass</code> / <code>low</code>, several lines each, chosen by score.</td></tr>
+</table>
+
+<p>Subjects are drawn from the catalogue and assigned round-robin to teachers, so every
+subject is covered before any is doubled up. That is why the teacher list does not read as
+random when you open it next to the course list.</p>
+
+<h2>23.2 The idempotency trick</h2>
+
+<pre class="py"><code>def dice(*parts):
+    """A stable 0-99 for a set of ids."""
+    return crc32(":".join(str(p) for p in parts).encode()) % 100</code></pre>
+
+<p>This is the whole idea. Every "does this row exist yet / should this student have handed
+this in" decision calls <code>dice()</code> with the ids involved instead of drawing from a
+random stream. Same inputs, same answer, in this process and the next one.</p>
+
+<p>Python's own <code>hash()</code> would not do: it is salted per process for strings, so it
+gives a different answer on every run. <code>crc32</code> is stable across processes and
+machines.</p>
+
+<p>The consequence: a lesson that was skipped on the first run is skipped on every run, and a
+student who had handed in four of six assignments still has four of six afterwards. Rows are
+also found by a stable key before being created — a person by email, a course by title, a
+lesson by title within its course — so a second run adds nothing and duplicates nothing.</p>
+
+<h2>23.3 The phases, in order</h2>
+
+<table>
+<tr><th>#</th><th>Method</th><th>What it does</th></tr>
+<tr><td>0</td><td><code>_wipe()</code></td><td>Only with <code>--fresh</code>. Deletes in child-first order, then removes non-superuser accounts on the two example.com domains.</td></tr>
+<tr><td>1</td><td><code>_seed_demo_accounts()</code></td><td>The three demo logins. <strong>Repaired, not skipped:</strong> the password and phone are set on every run, and another account squatting on one of the numbers is moved off it.</td></tr>
+<tr><td>2</td><td><code>_seed_admins()</code></td><td>Three named admin accounts.</td></tr>
+<tr><td>3</td><td><code>_seed_teachers(n)</code></td><td>Teacher rows plus a matching login each. Tied together by email, because the schema has no link.</td></tr>
+<tr><td>4</td><td><code>_seed_students(n)</code></td><td>Student rows, roll numbers <code>OSD-2026-0001</code> onward, continuing rather than restarting the series.</td></tr>
+<tr><td>5</td><td><code>_seed_courses()</code></td><td>One course per catalogue entry, owned by a teacher whose subject matches.</td></tr>
+<tr><td>6</td><td><code>_seed_course_content()</code></td><td>Lessons from the catalogue; roughly three in four get an assignment, with due dates walking forward a week per lesson.</td></tr>
+<tr><td>7</td><td><code>_seed_enrollments()</code></td><td>1–4 courses per active student, 1–2 for an inactive one.</td></tr>
+<tr><td>8</td><td><code>_seed_submissions()</code></td><td>Per-student "diligence" of 45–99 decides what fraction of their assignments they hand in.</td></tr>
+<tr><td>9</td><td><code>_seed_results()</code></td><td>Grades most of what is older than five days, leaving a realistic marking backlog.</td></tr>
+</table>
+
+<p>The whole <code>handle()</code> is wrapped in <code>@transaction.atomic</code>, so a
+failure halfway through leaves the database as it was.</p>
+
+<h2>23.4 The details worth copying</h2>
+
+<h3>Working around <code>auto_now_add</code></h3>
+
+<p><code>Enrollment.enrollment_date</code> and <code>Submission.submitted_at</code> cannot be
+set on insert. So the seeder inserts with <code>bulk_create</code>, reads the new rows back,
+computes a date for each, and rewrites them with <code>bulk_update</code>:</p>
+
+<pre class="py"><code>Enrollment.objects.bulk_create(new_rows, batch_size=500)
+fresh = list(Enrollment.objects.filter(id__in=[r.id for r in new_rows]))
+for row in fresh:
+    row.enrollment_date = (
+        self.now - timedelta(days=5 + dice("when", row.student_id, row.course_id) * 7)
+    ).date()
+Enrollment.objects.bulk_update(fresh, ["enrollment_date"], batch_size=500)</code></pre>
+
+<p>Submissions get the same treatment, but placed relative to their own assignment's due
+date — usually a few days before it, sometimes just after:</p>
+
+<pre class="py"><code>drift = dice("drift", row.student_id, row.assignment_id) / 10.0 - 7.0
+row.submitted_at = row.assignment.due_date + timedelta(days=drift)</code></pre>
+
+<h3>Grades that never move</h3>
+
+<pre class="py"><code>score = max(0.0, min(100.0, random.Random(submission.id).gauss(72, 15)))</code></pre>
+
+<p>A fresh <code>Random</code> seeded with the submission's own id — so a mark is a function
+of the row, not of when the seeder happened to reach it. A normal-ish distribution centred
+just above a pass. About 15% of eligible submissions are skipped
+(<code>dice("graded", …) &gt;= 85</code>) so the Results page has a backlog to show, and
+anything submitted in the last five days is left alone entirely.</p>
+
+<h3>Reading assignments back from the database</h3>
+
+<p><code>_seed_submissions</code> queries <code>Assignment.objects.all()</code> rather than
+walking the catalogue. Courses seeded by an earlier run — or by an older version of the
+catalogue — have assignments too, and their students should be handing work in as well. This
+is why a database seeded over time can hold more courses than the catalogue currently lists:
+the seeder tops up and never removes without <code>--fresh</code>.</p>
+
+<h3>Phone numbers by prefix</h3>
+
+<table class="tight">
+<tr><th>Prefix</th><th>Who</th></tr>
+<tr><td><code>0170…</code></td><td>Admins (and the three demo accounts, on fixed numbers)</td></tr>
+<tr><td><code>0192…</code></td><td>Teacher accounts</td></tr>
+<tr><td><code>0181…</code></td><td>Student accounts</td></tr>
+<tr><td><code>0179…</code></td><td>Where a squatter gets moved to when a demo number is reclaimed</td></tr>
+</table>
+
+<div class="gap">
+<p><code>DEMO_ACCOUNTS</code> exists twice: in <code>seed_data.py</code> with all three roles,
+and in <code>frontend/src/pages/Login.jsx</code> where the login page's one-click buttons come
+from. The comment says they are kept in sync by hand — and today they are not: the login page
+lists only the admin. The teacher and student logins still work, they are just not offered as
+buttons.</p>
+</div>
+
+<h1 id="ch24">24. <code>scripts/api_smoke_test.py</code></h1>
+
+<p class="lead">487 lines that drive every endpoint against a running server as all three
+roles and report what happened. The closest thing this project has to a test suite.</p>
+
+<h2>24.1 Running it</h2>
+
+<pre class="sh"><code>python manage.py runserver 8001     # terminal one
+python scripts/api_smoke_test.py    # terminal two</code></pre>
+
+<p>It needs <code>requests</code>, which is not in <code>requirements.txt</code> — install it
+separately if it is not already there. Exit codes: <code>0</code> all passed,
+<code>1</code> something failed, <code>2</code> could not reach the server or could not sign
+in (which usually means the database was never seeded).</p>
+
+<h2>24.2 How it is built</h2>
+
+<table>
+<tr><th>Piece</th><th>Role</th></tr>
+<tr><td><code>Report</code></td><td>Counts passes, collects failures with the response body, prints a summary. <code>check(label, response, expected)</code> takes a status code or a tuple of acceptable ones.</td></tr>
+<tr><td><code>Client</code></td><td>A signed-in caller. Logs in on construction, keeps the bearer token on a <code>requests.Session</code>, and asserts the role the server reports matches the one asked for. <code>Client()</code> with no role is the anonymous caller.</td></tr>
+<tr><td><code>resource_matrix(ids)</code></td><td>The data table the write checks are generated from: for each resource, a create payload, an update payload, the set of roles that may write, and optionally a separate set that may create.</td></tr>
+</table>
+
+<h2>24.3 What it checks, section by section</h2>
+
+<table>
+<tr><th>Section</th><th>Checks</th></tr>
+<tr><td>Authentication</td><td>All three demo logins work and return both tokens plus the right role; a wrong password, an unknown phone and a missing field are all 400; a garbage bearer token is 401.</td></tr>
+<tr><td>Own profile</td><td>Each role reads its own profile and sees its own role; anonymous gets 401; a name edit round-trips; <strong>sending <code>role</code> does not change it</strong>; a duplicate phone is 400; wrong / mismatched / weak passwords are all refused.</td></tr>
+<tr><td>Password reset</td><td>A known and an unknown address give the <em>same</em> 200; a malformed address is 400; a forged token is 400.</td></tr>
+<tr><td>Account creation</td><td>Anonymous 401, teacher 403, student 403; an admin gets 201 and the chosen role is applied; duplicate username and weak password are 400; <strong>the new account can then log in</strong>.</td></tr>
+<tr><td>Reading</td><td>All eight lists: anonymous 401, then 200 for each of the three roles. Then one detail route per resource, plus a 404 for a missing id.</td></tr>
+<tr><td>Writing</td><td>For each of the eight resources: anonymous cannot create; every role that should not create gets 403; the <em>least privileged role that is still allowed</em> does the create, so the permission class is exercised at its boundary; the row reads back, accepts PATCH and PUT; every role that should not edit gets 403 on PATCH and DELETE; and nonsense input is 400.</td></tr>
+<tr><td>Cleanup</td><td>Deletes everything it made, children first, accepting 204 or 404.</td></tr>
+</table>
+
+<h2>24.4 The two ideas worth stealing</h2>
+
+<p><strong>An expected 403 is a pass.</strong> The permission rules are part of what "working"
+means, so a create that succeeds when it should have been refused is a failure, not a bonus.
+Roughly half the checks in the file expect a refusal.</p>
+
+<p><strong>Placeholders resolved mid-run.</strong> A result needs a submission that exists, and
+the submission is created earlier in the same loop. The matrix writes
+<code>{"submission": "$submission"}</code> and a small <code>resolve()</code> swaps any
+<code>"$name"</code> for the id it stands for just before the request goes out.</p>
+
+<div class="note">
+<p><span class="filepath">backend/backend/tests.py</span> is still the empty
+<code>startapp</code> stub. There is no <code>manage.py test</code> suite; this script is the
+whole of the testing story. See <a href="#ch45">chapter 45</a>.</p>
+</div>
+
+<!-- ================= PART IV ================= -->
+<div class="part" id="part4"><span class="pnum">Part Four</span><span class="ptitle">The frontend, file by file</span></div>
+<p class="partlede">A React app with no state library, no data-fetching library and no
+component library. Thirty-two files, and five of them explain the other twenty-seven.</p>
+
+<h1 id="ch25">25. Entry points and build config</h1>
+
+<h2>25.1 <code>index.html</code></h2>
+
+<p>One <code>&lt;div id="root"&gt;</code> and one module script pointing at
+<code>/src/main.jsx</code>. Vite rewrites that during a build. The title is
+<code>LMS</code>; the favicon is a local SVG.</p>
+
+<h2>25.2 <code>src/main.jsx</code></h2>
+
+<pre class="jsx"><code>createRoot(document.getElementById("root")).render(
+  &lt;BrowserRouter&gt;
+    &lt;AuthProvider&gt;
+      &lt;App /&gt;
+    &lt;/AuthProvider&gt;
+  &lt;/BrowserRouter&gt;,
+);</code></pre>
+
+<p>Three layers and the order matters. <code>BrowserRouter</code> is outermost because
+<code>AuthProvider</code>'s children use <code>Navigate</code> and <code>useLocation</code>.
+There is no <code>StrictMode</code> wrapper — worth knowing, because effects therefore run
+once in development rather than twice.</p>
+
+<h2>25.3 <code>src/index.css</code></h2>
+
+<pre class="js"><code>@import "tailwindcss";</code></pre>
+
+<p>The entire stylesheet. Tailwind 4 needs no config file and no
+<code>@tailwind base/components/utilities</code> triplet. Every style in the app is a utility
+class in JSX; there is not one custom CSS rule anywhere.</p>
+
+<h2>25.4 <code>vite.config.js</code></h2>
+
+<pre class="js"><code>export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: { port: 5180 },
+});</code></pre>
+
+<p>Two plugins, one setting. Port 5180 because 5173–5175 were taken by other projects.
+There is <strong>no dev proxy</strong> — the browser calls the Django origin directly, which
+is why CORS has to be configured on the server side.</p>
+
+<h2>25.5 <code>eslint.config.js</code></h2>
+
+<p>Flat config on ESLint 10, extending the JS recommended set plus the react-hooks and
+react-refresh plugins. One custom rule:</p>
+
+<pre class="js"><code>'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z]' }],</code></pre>
+
+<p>ESLint's own <code>no-unused-vars</code> does not count a name being used inside JSX, so
+every imported component and icon would be reported as unused.
+<code>eslint-plugin-react</code> normally fixes that but does not support ESLint 10 yet, so
+capitalised names are ignored instead. The cost: a genuinely unused
+<code>import { Trophy }</code> will not be caught.</p>
+
+<h1 id="ch26">26. <code>api.js</code> — every request</h1>
+
+<p class="lead">One file, and the only place in the app that calls <code>fetch</code>. Read
+this and you know the entire surface the browser touches.</p>
+
+<h2>26.1 Session storage</h2>
+
+<table class="tight">
+<tr><th>Function</th><th>What it does</th></tr>
+<tr><td><code>getToken()</code></td><td>Reads <code>lms_access_token</code> from <code>localStorage</code></td></tr>
+<tr><td><code>saveSession(token, user)</code></td><td>Writes the token and a JSON <code>{id, username, role}</code> under <code>lms_user</code></td></tr>
+<tr><td><code>getSavedUser()</code></td><td>Parses it back, returning <code>null</code> on anything unparseable</td></tr>
+<tr><td><code>clearSession()</code></td><td>Removes both keys</td></tr>
+</table>
+
+<p><code>localStorage</code> rather than a cookie is what makes a page refresh keep you signed
+in — and also what makes the token readable by any script on the origin. See
+<a href="#ch44">chapter 44</a>.</p>
+
+<h2>26.2 <code>readError(body, response)</code></h2>
+
+<p>DRF reports failures in at least three shapes:</p>
+
+<pre class="json"><code>{"detail": "You do not have permission to perform this action."}
+{"error": "Invalid phone or password"}
+{"phone": ["This field is required."], "email": ["Enter a valid email address."]}</code></pre>
+
+<p>The first is DRF's own for permissions and 404s, the second is the hand-written login view,
+the third is any serializer rejecting a field. <code>readError</code> flattens all of them
+into one readable string — <code>field: message</code> per line, with
+<code>non_field_errors</code> printed bare — which is what every <code>&lt;Alert&gt;</code>
+in the app ends up showing. Nothing else in the frontend has to know DRF's error shapes.</p>
+
+<h2>26.3 <code>request(path, options)</code></h2>
+
+<p>The single choke point. In order:</p>
+
+<ol>
+<li>Set <code>Content-Type: application/json</code> if there is a body.</li>
+<li>Attach <code>Authorization: Bearer &lt;token&gt;</code> unless the caller passed
+<code>auth: false</code> (login and the two reset endpoints).</li>
+<li><code>fetch</code>. A network-level failure is caught and re-thrown as
+<em>"Could not reach the server. Is Django running on http://127.0.0.1:8001?"</em> — the
+message you see when the backend is not up.</li>
+<li><strong>401 handling:</strong> clear the session and dispatch a
+<code>window</code> event called <code>lms:unauthorised</code>, then throw <em>"Your session
+has expired. Please log in again."</em></li>
+<li>204 → return <code>null</code>. <code>DELETE</code> has no body to parse.</li>
+<li>Parse the text as JSON, tolerating an empty or non-JSON body.</li>
+<li>Not OK → throw <code>new Error(readError(...))</code>. Every page catches that and puts
+<code>problem.message</code> in an alert.</li>
+</ol>
+
+<div class="note">
+<p>Step 4 is where the missing refresh endpoint shows up. There is nothing to retry with, so
+the only honest response to a rejected token is to drop the session. The event is how
+<code>AuthContext</code> hears about it without <code>api.js</code> having to import React.</p>
+</div>
+
+<h2>26.4 The named auth calls</h2>
+
+<table class="tight">
+<tr><th>Function</th><th>Request</th></tr>
+<tr><td><code>login(phone, password)</code></td><td><code>POST /login/</code>, <code>auth: false</code></td></tr>
+<tr><td><code>register(details)</code></td><td><code>POST /register/</code> — carries the admin's own token</td></tr>
+<tr><td><code>fetchProfile()</code></td><td><code>GET /profile/</code></td></tr>
+<tr><td><code>updateProfile(values)</code></td><td><code>PATCH /profile/</code></td></tr>
+<tr><td><code>changePassword(values)</code></td><td><code>POST /change-password/</code></td></tr>
+<tr><td><code>requestPasswordReset(email)</code></td><td><code>POST /password-reset/</code>, <code>auth: false</code></td></tr>
+<tr><td><code>confirmPasswordReset(details)</code></td><td><code>POST /password-reset-confirm/</code>, <code>auth: false</code></td></tr>
+</table>
+
+<h2>26.5 <code>toQueryString(params)</code></h2>
+
+<pre class="js"><code>// {page: 2, search: "", course: 3}  →  "?page=2&amp;course=3"</code></pre>
+
+<p>Empty values are dropped rather than sent as blanks. An empty <code>?search=</code> or
+<code>?course=</code> is the filter sitting on "Any", and the server ignores those anyway, so
+leaving them out keeps the address bar and the network tab readable.</p>
+
+<h2>26.6 <code>resource(path)</code> — five calls built once</h2>
+
+<pre class="js"><code>function resource(path) {
+  return {
+    list:    (params) =&gt; request(`/${path}/${toQueryString(params)}`),
+    listAll: (params) =&gt; everyPage(path, params),
+    count:   async (params) =&gt; { /* page_size=1, read .count */ },
+    create:  (values)     =&gt; request(`/${path}/`,      {method:"POST", ...}),
+    update:  (id, values) =&gt; request(`/${path}/${id}/`,{method:"PUT",  ...}),
+    remove:  (id)         =&gt; request(`/${path}/${id}/`,{method:"DELETE"}),
+  };
+}</code></pre>
+
+<p>Eight resources are then one line each:</p>
+
+<pre class="js"><code>export const teachersApi    = resource("teacher");
+export const studentsApi    = resource("student");
+export const coursesApi     = resource("course");
+export const enrollmentsApi = resource("enrollment");
+export const lessonsApi     = resource("lesson");
+export const assignmentsApi = resource("assignment");
+export const submissionsApi = resource("submission");
+export const resultsApi     = resource("results");   // note: plural</code></pre>
+
+<h3>The three read shapes, and when to use which</h3>
+
+<table>
+<tr><th>Call</th><th>Returns</th><th>Costs</th><th>Used by</th></tr>
+<tr><td><code>list(params)</code></td><td>The whole envelope, untouched</td><td>One request, one page</td><td>Every table</td></tr>
+<tr><td><code>listAll(params)</code></td><td>Just the rows, every page walked</td><td>⌈n/200⌉ requests</td><td>Dropdowns and id→name lookups</td></tr>
+<tr><td><code>count(params)</code></td><td>A number</td><td>One request, one row</td><td>The dashboard's eight tiles</td></tr>
+</table>
+
+<p><code>update</code> is a <code>PUT</code>, not a <code>PATCH</code> — every form sends the
+complete row, so there is no partial-update path in the frontend at all.</p>
+
+<h3><code>everyPage()</code></h3>
+
+<pre class="js"><code>for (let page = 1; ; page += 1) {
+  const body = await request(`/${path}/${toQueryString({...params, page, page_size: 200})}`);
+  if (Array.isArray(body)) return body;      // an unpaginated endpoint
+  rows.push(...(body?.results ?? []));
+  if (!body?.next) return rows;
+}</code></pre>
+
+<p>200 is <code>BIGGEST_PAGE</code>, kept in step with <code>max_page_size</code> in
+<code>pagination.py</code>. The <code>Array.isArray</code> branch is defensive: an endpoint
+that was never paginated would answer with a bare array.</p>
+
+<div class="note">
+<p><code>listAll</code> is deliberate, not an oversight. The tables page through their data,
+but the dropdowns need the whole list — a course row carries <code>{"teacher": 3}</code>, and
+a lookup list that is itself paginated cannot answer for a row on page 40. Those lists are
+small (26 teachers, 24 courses, 180 students), and this is the only place that pays for
+them.</p>
+</div>
+
+<h1 id="ch27">27. <code>auth.js</code> and <code>AuthContext.jsx</code></h1>
+
+<h2>27.1 Why they are two files</h2>
+
+<p><code>auth.js</code> holds the context object and the <code>useAuth()</code> hook.
+<code>AuthContext.jsx</code> holds the provider component. They are split because <strong>Vite's
+fast refresh gives up on any file that mixes components with other exports</strong> — keeping
+the <code>.jsx</code> file to a single component export keeps hot reload working.</p>
+
+<pre class="js"><code>export const AuthContext = createContext(null);
+
+export function useAuth() {
+  const value = useContext(AuthContext);
+  if (!value) throw new Error("useAuth must be used inside an AuthProvider");
+  return value;
+}</code></pre>
+
+<p>The throw turns a missing provider into a clear error at the point of use instead of a
+confusing <code>null</code> dereference three components later.</p>
+
+<h2>27.2 What the provider holds</h2>
+
+<pre class="js"><code>const [user, setUser] = useState(() =&gt; getSavedUser());
+const [isLoggedIn, setIsLoggedIn] = useState(() =&gt; Boolean(getToken()));</code></pre>
+
+<p>Both initialised lazily from <code>localStorage</code>, which is what makes a page refresh
+not sign you out. The context value is <code>{user, isLoggedIn, logIn, logOut}</code> and
+<code>user</code> is only ever <code>{id, username, role}</code> — the full account lives on
+the server and is fetched by the Profile page.</p>
+
+<h2>27.3 The two effects</h2>
+
+<h3>Listening for a dead token</h3>
+
+<pre class="js"><code>window.addEventListener("lms:unauthorised", handleUnauthorised);</code></pre>
+
+<p>That is the event <code>api.js</code> fires on any 401. The handler clears
+<code>user</code> and <code>isLoggedIn</code>, which makes <code>ProtectedRoute</code>
+redirect to <code>/login</code> on the next render. No import cycle between
+<code>api.js</code> and React, because the browser's event bus sits between them.</p>
+
+<h3>Topping up a role-less session</h3>
+
+<p>A session saved before roles existed has no <code>role</code> on it. Rather than treat that
+account as having no permissions, the provider calls <code>fetchProfile()</code> once, writes
+the answer back to <code>localStorage</code>, and sets state. It is guarded by a
+<code>stillMounted</code> flag so a late answer cannot set state after unmount.</p>
+
+<h2>27.4 <code>logIn</code> and <code>logOut</code></h2>
+
+<pre class="js"><code>async function logIn(phone, password) {
+  const data = await loginRequest(phone, password);
+  const nextUser = { id: data.user_id, username: data.username, role: data.role };
+  saveSession(data.tokens.access, nextUser);   // nested. data.access does not exist.
+  setUser(nextUser);
+  setIsLoggedIn(true);
+}</code></pre>
+
+<p><code>logOut</code> just calls <code>clearSession()</code> and resets both pieces of state.
+<strong>There is no logout endpoint.</strong> Discarding the token is all the frontend can do;
+the token stays valid on the server until it expires. The refresh token from the login
+response is never stored at all.</p>
+
+<h1 id="ch28">28. <code>permissions.js</code></h1>
+
+<p>A deliberate copy of <code>backend/permissions.py</code>, used only to decide which buttons
+are worth drawing.</p>
+
+<pre class="js"><code>const WRITERS = {
+  teacher:    [ADMIN],
+  student:    [ADMIN],
+  course:     [ADMIN, TEACHER],
+  enrollment: [ADMIN, TEACHER],
+  lesson:     [ADMIN, TEACHER],
+  assignment: [ADMIN, TEACHER],
+  submission: [ADMIN, TEACHER],
+  results:    [ADMIN, TEACHER],
+};
+
+export function canWrite(role, resource) {
+  return (WRITERS[resource] ?? []).includes(role);
+}
+
+export function canCreate(role, resource) {
+  if (resource === "submission" &amp;&amp; role === STUDENT) return true;
+  return canWrite(role, resource);
+}</code></pre>
+
+<p><code>canCreate</code> differs from <code>canWrite</code> in exactly one place, mirroring
+<code>SubmissionWrites</code> on the server. Every resource page reads both:</p>
+
+<pre class="js"><code>const mayCreate = canCreate(user?.role, "teacher");   // the Add button
+const mayEdit   = canWrite(user?.role, "teacher");    // the row pencil and bin</code></pre>
+
+<p><code>roleLabel(role)</code> turns the stored value into "Admin" / "Teacher" / "Student",
+falling back to "No role" — that is the pill next to your name in the sidebar.</p>
+
+<div class="warn">
+<p>A mistake in this file is a cosmetic bug, not a hole: the server checks again. But the two
+files must move together, or the app will offer buttons that fail with a 403.</p>
+</div>
+
+<h1 id="ch29">29. <code>useTableQuery.js</code></h1>
+
+<p class="lead">Everything the eight table pages need to ask the server for one page of rows,
+written once instead of eight times over.</p>
+
+<h2>29.1 What it holds</h2>
+
+<table class="tight">
+<tr><th>State</th><th>Meaning</th></tr>
+<tr><td><code>page</code>, <code>pageSize</code></td><td>Which page and how big. <code>PAGE_SIZES = [10, 25, 50, 100]</code>.</td></tr>
+<tr><td><code>searchBox</code></td><td>What the input shows. Updates on every keystroke.</td></tr>
+<tr><td><code>search</code></td><td>What gets sent. Lags <code>searchBox</code> by 300 ms.</td></tr>
+<tr><td><code>ordering</code></td><td>The sort, spelled as the server wants it: <code>"name"</code> or <code>"-name"</code>.</td></tr>
+<tr><td><code>filters</code></td><td>An object of dropdown and date values.</td></tr>
+</table>
+
+<h2>29.2 The debounce</h2>
+
+<pre class="js"><code>useEffect(() =&gt; {
+  if (searchBox === search) return;
+  const timer = setTimeout(() =&gt; {
+    setSearch(searchBox);
+    setPage(1);
+  }, 300);
+  return () =&gt; clearTimeout(timer);
+}, [searchBox, search]);</code></pre>
+
+<p>Typing "sarah" is six keystrokes. Waiting a moment after the last one turns six requests
+into one. Two separate state values, not one, is what makes that possible: the input stays
+responsive while the request lags behind.</p>
+
+<h2>29.3 Everything resets the page</h2>
+
+<p><code>setPageSize</code>, <code>setFilter</code>, <code>toggleSort</code> and the debounce
+all call <code>setPage(1)</code>. A new search is a new result set, so page 4 of the old one
+is meaningless.</p>
+
+<h2>29.4 <code>toggleSort</code></h2>
+
+<pre class="js"><code>setOrdering((current) =&gt; (current === field ? `-${field}` : field));</code></pre>
+
+<p>Click a header to sort by it; click the same one again to turn it around. The leading
+<code>-</code> is what <code>OrderingFilter</code> reads as descending. There is no third
+"unsorted" state.</p>
+
+<h2>29.5 <code>clear()</code> and <code>isFiltered</code></h2>
+
+<p><code>clear()</code> resets the search, the filters, the ordering and the page — but
+deliberately <em>not</em> the page size, which is a preference about the screen rather than
+part of the question being asked of the data. <code>isFiltered</code> is true when
+<code>clear()</code> would have something to undo, and is what makes the Clear button
+appear.</p>
+
+<h2>29.6 <code>params</code>, and why it is memoised</h2>
+
+<pre class="js"><code>const params = useMemo(
+  () =&gt; ({ page, page_size: pageSize, search, ordering, ...filters }),
+  [page, pageSize, search, ordering, filters],
+);</code></pre>
+
+<p>Every page lists <code>query.params</code> as a dependency of the effect that loads rows.
+An object rebuilt on every render would be a new reference every time and the effect would
+loop forever. This is the single most important line in the file.</p>
+
+<h2>29.7 <code>stepBackAfter(problem)</code></h2>
+
+<pre class="js"><code>if (page &gt; 1 &amp;&amp; /invalid page/i.test(problem?.message ?? "")) {
+  setPage((current) =&gt; current - 1);
+  return true;
+}
+return false;</code></pre>
+
+<p>Delete the only row on the last page and the browser is left asking for a page that no
+longer exists, which the server answers with a 404 saying "Invalid page". Every page's
+<code>catch</code> block calls this first and bails out if it returns true, so the reader sees
+the previous page rather than an error.</p>
+
+<h1 id="ch30">30. <code>App.jsx</code> — the routes</h1>
+
+<pre class="jsx"><code>&lt;Routes&gt;
+  &lt;Route path="/login"           element={&lt;Login /&gt;} /&gt;
+  &lt;Route path="/forgot-password" element={&lt;ForgotPassword /&gt;} /&gt;
+  &lt;Route path="/reset-password"  element={&lt;ResetPassword /&gt;} /&gt;
+  &lt;Route path="/register"        element={&lt;Navigate to="/login" replace /&gt;} /&gt;
+
+  &lt;Route element={&lt;ProtectedRoute&gt;&lt;Sidebar /&gt;&lt;/ProtectedRoute&gt;}&gt;
+    &lt;Route path="/"            element={&lt;Dashboard /&gt;} /&gt;
+    &lt;Route path="/teachers"    element={&lt;Teachers /&gt;} /&gt;
+    ...
+    &lt;Route path="/profile"     element={&lt;Profile /&gt;} /&gt;
+    &lt;Route path="/accounts" element={
+      &lt;ProtectedRoute role="admin"&gt;&lt;Accounts /&gt;&lt;/ProtectedRoute&gt;
+    } /&gt;
+  &lt;/Route&gt;
+
+  &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+&lt;/Routes&gt;</code></pre>
+
+<table>
+<tr><th>Path</th><th>Page</th><th>Guard</th></tr>
+<tr><td><code>/login</code></td><td>Login</td><td rowspan="3">public — someone who has forgotten their password cannot be signed in</td></tr>
+<tr><td><code>/forgot-password</code></td><td>ForgotPassword</td></tr>
+<tr><td><code>/reset-password</code></td><td>ResetPassword</td></tr>
+<tr><td><code>/register</code></td><td>—</td><td>redirects to <code>/login</code>; it used to be a public sign-up page</td></tr>
+<tr><td><code>/</code></td><td>Dashboard</td><td rowspan="10">inside the <code>ProtectedRoute</code> + <code>Sidebar</code> layout route: a token is required</td></tr>
+<tr><td><code>/teachers</code></td><td>Teachers</td></tr>
+<tr><td><code>/students</code></td><td>Students</td></tr>
+<tr><td><code>/courses</code></td><td>Courses</td></tr>
+<tr><td><code>/enrollments</code></td><td>Enrollments</td></tr>
+<tr><td><code>/lessons</code></td><td>Lessons</td></tr>
+<tr><td><code>/assignments</code></td><td>Assignments</td></tr>
+<tr><td><code>/submissions</code></td><td>Submissions</td></tr>
+<tr><td><code>/results</code></td><td>Results</td></tr>
+<tr><td><code>/profile</code></td><td>Profile</td></tr>
+<tr><td><code>/accounts</code></td><td>Accounts</td><td>a second, nested <code>ProtectedRoute role="admin"</code></td></tr>
+<tr><td><code>*</code></td><td>NotFound</td><td>outside the layout, so there is no sidebar to escape with</td></tr>
+</table>
+
+<h2>30.1 The layout route</h2>
+
+<p>The <code>&lt;Route element={…}&gt;</code> with no <code>path</code> is a
+<em>layout route</em>. Its element renders once and the matched child appears wherever that
+element puts <code>&lt;Outlet /&gt;</code> — which <code>Sidebar.jsx</code> does, in the main
+column. So one guard and one frame cover eleven pages.</p>
+
+<h2>30.2 <code>ProtectedRoute</code></h2>
+
+<pre class="jsx"><code>if (!isLoggedIn) {
+  return &lt;Navigate to="/login" replace state={{ from: location.pathname }} /&gt;;
+}
+if (role &amp;&amp; !user?.role) {
+  return null;              // the role is still being topped up from /profile/
+}
+if (role &amp;&amp; user.role !== role) {
+  return &lt;Navigate to="/" replace /&gt;;
+}
+return children;</code></pre>
+
+<p>Three decisions. <code>state.from</code> remembers where you were headed so the login page
+can send you back there instead of always dropping you on the dashboard. The middle branch
+matters because the role arrives a moment after the token on a restored session — without the
+wait, an admin refreshing on <code>/accounts</code> would be bounced to the dashboard by
+mistake. And the last one is why hiding the sidebar link is not enough: somebody can always
+type the URL.</p>
+
+<h1 id="ch31">31. <code>Sidebar.jsx</code></h1>
+
+<p>The menu, the account block, and the frame every signed-in page renders inside.</p>
+
+<h2>31.1 The menu</h2>
+
+<p>A ten-item array of <code>{address, text, icon}</code>. One entry carries
+<code>onlyFor: ADMIN</code>:</p>
+
+<pre class="jsx"><code>{ address: "/accounts", text: "Accounts", icon: &lt;UserPlus size={16} /&gt;, onlyFor: ADMIN }
+
+const visibleMenu = menu.filter((item) =&gt; !item.onlyFor || item.onlyFor === user?.role);</code></pre>
+
+<p>The route and the API both check the role again. This is only about not offering it.</p>
+
+<h2>31.2 Two independent open/closed states</h2>
+
+<table>
+<tr><th>State</th><th>Applies to</th><th>Remembered?</th></tr>
+<tr><td><code>isCollapsed</code></td><td>Wide screens (<code>md:</code> and up). Icon-only rail, 4rem wide.</td><td>Yes — <code>localStorage["lms:sidebarCollapsed"]</code></td></tr>
+<tr><td><code>isDrawerOpen</code></td><td>Narrow screens. Slides in over the page with a backdrop.</td><td>No — it is a moment, not a preference</td></tr>
+</table>
+
+<p>Keeping them apart is why the collapsed classes carry <code>md:</code> prefixes rather than
+replacing the expanded ones: the drawer is always full width, so the icon-only layout is a
+wide-screen thing only.</p>
+
+<h2>31.3 The details</h2>
+
+<ul>
+<li><strong>Escape closes the drawer</strong>, matching the confirm dialog. The listener is
+only attached while it is open.</li>
+<li><strong>Tapping a link closes the drawer</strong>, done in the link's own
+<code>onClick</code> rather than in an effect on the address — one event, not a rule about
+navigation.</li>
+<li><strong>Collapsed, the expand button takes the logo's place.</strong> At 4rem there is
+room for one thing, and the way back out matters more than the branding.</li>
+<li><strong>The account block is a link to <code>/profile</code></strong>, showing the username
+and a role pill from <code>roleLabel()</code>. Log out sits below it.</li>
+<li><strong>The mobile top bar</strong> — hamburger, logo, title — is <code>md:hidden</code>
+and is the only way to reach the menu on a phone.</li>
+</ul>
+
+<figure class="twoup">
+  <img src="screenshots/mobile-dashboard.png" alt="Dashboard on a phone">
+  <img src="screenshots/mobile-menu.png" alt="The drawer open on a phone">
+</figure>
+<p class="small center">The same app at 390&nbsp;px: the sidebar becomes a drawer with a
+backdrop, and the tables scroll sideways.</p>
+
+<h1 id="ch32">32. <code>components/</code> — the thirteen</h1>
+
+<p>All exported from <span class="filepath">components/index.js</span>, so pages import one
+line: <code>import { Alert, Button, Table } from "../components/index.js";</code></p>
+
+<h2>32.1 The shared bits</h2>
+
+<p><code>styles.js</code> is four lines — the <code>inputBox</code> and <code>labelText</code>
+class strings, shared so every form control looks identical.</p>
+
+<p><code>field.js</code> holds <code>nameFromLabel()</code>, which turns
+<code>"Confirm new password"</code> into <code>"confirm_new_password"</code>. A control wrapped
+in its own <code>&lt;label&gt;</code> already has an accessible name, so this is not about
+screen readers. It is about the two things a wrapper cannot give you: a <code>name</code>,
+which is what browser autofill and password managers key off, and an <code>id</code>, which is
+what the browser console asks for.</p>
+
+<div class="tip">
+<p>This is also how the screenshot script fills the login form:
+<code>page.fill('input[name="phone_number"]', …)</code> works only because the label reads
+"Phone number".</p>
+</div>
+
+<h2>32.2 The catalogue</h2>
+
+<table>
+<tr><th>Component</th><th>Lines</th><th>What it is</th></tr>
+<tr><td><code>Button</code></td><td>22</td><td>Three looks: <code>primary</code> (indigo), <code>secondary</code> (outlined), <code>danger</code> (red). Defaults to <code>type="button"</code> so it cannot submit a form by accident.</td></tr>
+<tr><td><code>IconButton</code></td><td>18</td><td>The same idea for a bare icon: <code>plain</code> and <code>danger</code>. Used for the row pencil and bin.</td></tr>
+<tr><td><code>Input</code></td><td>66</td><td>Labelled text box. A <code>type="password"</code> automatically grows an eye toggle, so no page has to implement one.</td></tr>
+<tr><td><code>Select</code></td><td>31</td><td>Labelled <code>&lt;select&gt;</code> with an optional placeholder option that has an empty value — which is what "Any" means to <code>toQueryString</code>.</td></tr>
+<tr><td><code>Textarea</code></td><td>23</td><td>Labelled textarea, three rows by default.</td></tr>
+<tr><td><code>Checkbox</code></td><td>22</td><td>Label wrapping the box; used for every <code>is_active</code>.</td></tr>
+<tr><td><code>Alert</code></td><td>53</td><td>Three variants (error, success, info). Renders <strong>nothing</strong> when <code>children</code> is empty, so pages can leave it mounted with a state value in it. Pass <code>onDismiss</code> to get a close button.</td></tr>
+<tr><td><code>PageHeader</code></td><td>8</td><td>An <code>h1</code> and a grey subtitle. Every screen starts with one.</td></tr>
+<tr><td><code>ConfirmDialog</code></td><td>80</td><td>Replaces <code>window.confirm()</code>. Escape cancels, backdrop click cancels, the card stops propagation, and the confirm button shows "Deleting…" while it works.</td></tr>
+<tr><td><code>FilterBar</code></td><td>60</td><td>The strip above a table: search box, the page's own dropdowns as <code>children</code>, and a Clear button that only appears when there is something to clear.</td></tr>
+<tr><td><code>Table</code></td><td>104</td><td>Builds the header row from a column list and renders the body rows a page supplies.</td></tr>
+<tr><td><code>Pagination</code></td><td>134</td><td>The strip below a table: "Showing 21–30 of 214", the rows-per-page select, and the pager.</td></tr>
+<tr><td><code>ProtectedRoute</code></td><td>27</td><td>Covered in <a href="#ch30">chapter 30</a>.</td></tr>
+</table>
+
+<h2>32.3 <code>Input</code>'s password branch</h2>
+
+<p>The non-password path nests the input inside the label. The password path cannot: the eye
+button has to sit outside the <code>&lt;label&gt;</code>, or its own text becomes part of the
+box's accessible name and a screen reader reads out "Password Show password". So the password
+version ties label and input together with an <code>id</code> instead of by nesting, and the
+button's <code>aria-label</code> says what it will do next, not what the box is doing now.</p>
+
+<h2>32.4 <code>Table</code>'s column format</h2>
+
+<pre class="jsx"><code>columns={["ID", { label: "Name", field: "name" }, "Action"]}</code></pre>
+
+<p>A plain string is a column there is no point sorting on. An object means sortable, and
+<code>field</code> is the name the server will accept in <code>?ordering=</code>. The header
+renders a button, sets <code>aria-sort</code> on the sorted column, and shows one of three
+icons: up, down, or a faint two-way chevron on the columns that <em>could</em> be sorted.
+Leave <code>onSort</code> out and every header is plain text.</p>
+
+<p><code>isEmpty</code> plus <code>emptyMessage</code> renders one centred row spanning every
+column. The pages pass a different message depending on whether a filter is active — "No
+teacher matches those filters" versus "No teachers yet".</p>
+
+<h2>32.5 <code>Pagination</code>'s window</h2>
+
+<pre class="js"><code>const WINDOW = 5;
+let first = page - Math.floor(WINDOW / 2);
+first = Math.max(1, Math.min(first, totalPages - WINDOW + 1));</code></pre>
+
+<p>With 22 pages and the reader on 11, the row reads <code>9 10 [11] 12 13</code> rather than
+every number from 1 to 22. The clamping keeps the window full at both ends: on page 1 it runs
+1–5, on the last page it runs (last−4)–last, instead of trailing off. First / previous / next
+/ last buttons flank it, disabled at the edges, each with an <code>aria-label</code>. The
+current page carries <code>aria-current="page"</code>.</p>
+
+<h1 id="ch33">33. The eight resource pages</h1>
+
+<p class="lead">Teachers, Students, Courses, Enrollments, Lessons, Assignments, Submissions,
+Results. They are the same page eight times. Read one and you have read them all.</p>
+
+<h2>33.1 The six steps</h2>
+
+<p>Both <code>Students.jsx</code> and <code>Teachers.jsx</code> carry this comment at the
+top, and all eight follow it:</p>
+
+<ol>
+<li><strong>State</strong> for the rows, the form, and the errors</li>
+<li><strong><code>useEffect()</code></strong> reads one page of rows from the API</li>
+<li><strong><code>reload()</code></strong> re-runs that effect after a save or a delete</li>
+<li><strong><code>handleSave()</code></strong> creates a new row, or updates the one being edited</li>
+<li><strong><code>askToDelete()</code> / <code>confirmDelete()</code></strong> opens the dialog, then deletes</li>
+<li><strong>The JSX</strong>: banners, form, filters, table, pages, confirm dialog</li>
+</ol>
+
+<h2>33.2 Step 1 — the state, every page</h2>
+
+<pre class="jsx"><code>const [teachers, setTeachers]   = useState([]);   // this page of rows
+const [isLoading, setIsLoading] = useState(true);
+const [error, setError]         = useState("");
+const [notice, setNotice]       = useState("");   // the green "Saved" line
+
+const [count, setCount]           = useState(0);  // rows matching the filters
+const [totalPages, setTotalPages] = useState(1);
+
+const query = useTableQuery({ ordering: "id" });
+const { params: queryParams, stepBackAfter } = query;
+
+const { user } = useAuth();
+const mayCreate = canCreate(user?.role, "teacher");
+const mayEdit   = canWrite(user?.role, "teacher");
+
+const [rowToDelete, setRowToDelete] = useState(null);   // null = dialog closed
+const [formIsOpen, setFormIsOpen]   = useState(false);
+const [editingId, setEditingId]     = useState(0);      // 0 = creating
+const [reloadCount, setReloadCount] = useState(0);</code></pre>
+
+<p><code>count</code> comes off the response, never from <code>teachers.length</code>, which
+only counts the page on screen. <code>editingId === 0</code> is the sentinel for "this form is
+a create, not an edit".</p>
+
+<h2>33.3 Step 2 — the load effect, and the race it avoids</h2>
+
+<pre class="jsx"><code>useEffect(() =&gt; {
+  let isCurrent = true;
+
+  async function load() {
+    setIsLoading(true);
+    try {
+      const body = await teachersApi.list(queryParams);
+      if (!isCurrent) return;
+      setTeachers(body.results);
+      setCount(body.count);
+      setTotalPages(body.total_pages);
+      setError("");
+    } catch (problem) {
+      if (!isCurrent) return;
+      if (stepBackAfter(problem)) return;
+      setError(problem.message);
+    } finally {
+      if (isCurrent) setIsLoading(false);
+    }
+  }
+
+  load();
+  return () =&gt; { isCurrent = false; };
+}, [reloadCount, queryParams, stepBackAfter]);</code></pre>
+
+<p>Typing in the search box fires a request per pause, and a slow one can land after a later,
+quicker one. The <code>isCurrent</code> flag, flipped by the cleanup function, makes the page
+ignore the answer to a question it has stopped asking. Without it the table can settle on the
+results for "sara" after you have finished typing "sarah".</p>
+
+<h2>33.4 Steps 4 and 5 — writing</h2>
+
+<pre class="jsx"><code>const values = { name, email, subject, is_active: isActive };
+if (editingId === 0) {
+  await teachersApi.create(values);   // POST
+  setNotice("Teacher added.");
+} else {
+  await teachersApi.update(editingId, values);   // PUT, the whole row
+  setNotice("Teacher updated.");
+}
+setError(""); closeForm(); reload();</code></pre>
+
+<p>Delete is two functions: <code>askToDelete(row)</code> only sets the row into state, which
+opens the dialog; <code>confirmDelete()</code> does the request. On failure it closes the
+dialog and shows the error rather than leaving a modal stuck open.</p>
+
+<h2>33.5 What differs between the eight</h2>
+
+<table>
+<tr><th>Page</th><th>Lines</th><th>Lookups it loads</th><th>Filter controls</th></tr>
+<tr><td>Teachers</td><td>367</td><td>none</td><td>Status</td></tr>
+<tr><td>Students</td><td>421</td><td>none</td><td>Status, Enrolled from / to</td></tr>
+<tr><td>Courses</td><td>371</td><td>teachers</td><td>Teacher</td></tr>
+<tr><td>Lessons</td><td>372</td><td>courses</td><td>Course</td></tr>
+<tr><td>Enrollments</td><td>414</td><td>students, courses</td><td>Student, Course, Enrolled from / to</td></tr>
+<tr><td>Assignments</td><td>504</td><td>courses, lessons</td><td>Course, Lesson, Due from / to</td></tr>
+<tr><td>Submissions</td><td>493</td><td>assignments, students, courses</td><td>Course, Assignment, Student, Handed in from / to</td></tr>
+<tr><td>Results</td><td>490</td><td>ungraded submissions, students, assignments</td><td>Student, Assignment, Score from / to</td></tr>
+</table>
+
+<h2>33.6 The lookup effect</h2>
+
+<p>Six of the eight load lookup lists for their dropdowns, in a <strong>second effect keyed
+only on <code>reloadCount</code></strong> — so turning a page does not re-read them:</p>
+
+<pre class="jsx"><code>useEffect(() =&gt; {
+  async function loadLookups() {
+    try {
+      const [studentRows, courseRows] = await Promise.all([
+        studentsApi.listAll({ ordering: "name" }),
+        coursesApi.listAll({ ordering: "title" }),
+      ]);
+      setStudents(studentRows);
+      setCourses(courseRows);
+    } catch (problem) { setError(problem.message); }
+  }
+  loadLookups();
+}, [reloadCount]);</code></pre>
+
+<p>These lists are for the <em>dropdowns only</em>. The name shown in each table row comes off
+the row itself as <code>teacher_name</code> / <code>course_title</code> / <code>student_name</code>,
+so no join is done in the browser.</p>
+
+<h2>33.7 The three pages that do something extra</h2>
+
+<h3>Assignments — cascading dropdowns</h3>
+
+<pre class="jsx"><code>const lessonsToOffer = courseId
+  ? lessons.filter((lesson) =&gt; lesson.course === Number(courseId))
+  : lessons;</code></pre>
+
+<p>An assignment points at both a course and a lesson, so once a course is chosen only that
+course's lessons are worth offering. The filter bar gets the same narrowing against its own
+course dropdown. The page also converts between the API's UTC timestamps and what
+<code>&lt;input type="datetime-local"&gt;</code> wants:</p>
+
+<pre class="js"><code>function toDateTimeInputValue(text) {
+  const moment = new Date(text);
+  const offsetInMs = moment.getTimezoneOffset() * 60 * 1000;
+  return new Date(moment.getTime() - offsetInMs).toISOString().slice(0, 16);
+}</code></pre>
+
+<p>Slicing the ISO string directly would show the UTC clock time, so the offset comes off
+first.</p>
+
+<h3>Submissions — a course filter for a row that has no course</h3>
+
+<p>Picking a course narrows the assignment dropdown next to it, the same trick as above. The
+request it produces is <code>?course=3</code>, which the server maps to
+<code>assignment__course</code> — the submission borrows its assignment's course.</p>
+
+<h3>Results — grading the ungraded</h3>
+
+<pre class="jsx"><code>const UNGRADED_TO_OFFER = 200;
+
+submissionsApi.list({
+  ungraded: "true",
+  ordering: "submitted_at",
+  page_size: UNGRADED_TO_OFFER,
+})</code></pre>
+
+<p>Because <code>Results.submission</code> is one-to-one, grading the same submission twice is
+a 400. So the dropdown is built from <code>?ungraded=true</code> — the server answering "no
+result attached yet" from the database — and only the first 200 of them, oldest first. A
+<code>&lt;select&gt;</code> is no way to hunt through thousands; the count under the box says
+how many are waiting, and grading one brings the next into view.</p>
+
+<p>One more wrinkle: the submission being <em>edited</em> is already graded, so it is not in
+the ungraded list. The page keeps <code>editingRow</code> — found in the results already on
+screen — so the dropdown can show its label instead of a blank.</p>
+
+<figure>
+  <img src="screenshots/results.png" alt="The results page">
+  <figcaption>Results: the score and feedback attached to a submission, with the student and
+  assignment names carried on the row by <code>ResultSerializer</code>.</figcaption>
+</figure>
+
+<h1 id="ch34">34. The seven other screens</h1>
+
+<h2>34.1 <code>Dashboard.jsx</code></h2>
+
+<p>Eight tiles, one per resource, each a <code>&lt;Link&gt;</code> to its table. The counts
+come from one <code>Promise.all</code> over <code>tile.api.count()</code>:</p>
+
+<pre class="jsx"><code>const totals = await Promise.all(tiles.map((tile) =&gt; tile.api.count()));</code></pre>
+
+<p>There is still no counts endpoint on the server, but a paginated list reports how many rows
+matched, so <code>count()</code> asks for <code>page_size=1</code> and reads
+<code>count</code> off the envelope. Eight tiles used to mean downloading eight whole tables —
+7,665 submissions among them. Now it is eight requests for one row each.</p>
+
+<p>While loading, each tile shows an em dash rather than a zero, so "still counting" and
+"none" do not look the same.</p>
+
+<h2>34.2 <code>Login.jsx</code></h2>
+
+<p>Phone and password, submitted through <code>useAuth().logIn</code>. Three details:</p>
+
+<ul>
+<li><strong>Where it sends you afterwards:</strong> <code>location.state?.from ?? "/"</code> —
+the path <code>ProtectedRoute</code> stashed when it bounced you.</li>
+<li><strong>The notice:</strong> <code>/reset-password</code> navigates here with
+<code>state.notice</code>, which is read <em>into state</em> so dismissing it sticks.</li>
+<li><strong>The dev-only panel</strong> is wrapped in <code>import.meta.env.DEV</code>. Vite
+replaces that with <code>false</code> in a production build, so the whole block and the
+<code>DEMO_ACCOUNTS</code> array are dropped from the bundle. Clicking a demo button fills the
+fields as well as signing in, so it is obvious what was used.</li>
+</ul>
+
+<p>There is no sign-up link, only the line <em>"No account? Ask an admin to make you one."</em></p>
+
+<h2>34.3 <code>ForgotPassword.jsx</code></h2>
+
+<p>Step one of two: one email field. On success the page swaps to a confirmation that says
+<em>"If an account uses …, a reset link is on its way"</em> — <strong>"if", not "we
+sent"</strong>, because the server answers identically either way and the page must not
+disclose more than the server does.</p>
+
+<p>In development it adds a dashed amber note: the mail backend prints to the Django terminal
+instead of sending, so the link is in that window.</p>
+
+<h2>34.4 <code>ResetPassword.jsx</code></h2>
+
+<p>Step two. It reads <code>?uid=</code> and <code>?token=</code> with
+<code>useSearchParams</code> and hands them straight back to the server — checking them in the
+browser would mean nothing. If either is missing, it says the link is incomplete rather than
+posting a request that is certain to fail.</p>
+
+<p>On success it navigates to <code>/login</code> with a notice, because resetting the password
+has retired the old sessions anyway.</p>
+
+<h2>34.5 <code>Accounts.jsx</code></h2>
+
+<p>Admin only, twice over: <code>ProtectedRoute role="admin"</code> in the router, and
+<code>IsAdmin</code> on <code>/api/register/</code>. Seven fields plus a role select whose
+options spell out what each role can do.</p>
+
+<p>After a successful create it shows the phone number the new person will sign in with, and
+clears the form. <strong>It deliberately does not log you in as the new account</strong> — the
+admin who filled it in stays signed in as themselves.</p>
+
+<figure>
+  <img src="screenshots/accounts.png" alt="The accounts page">
+  <figcaption>Creating a login. The role picked here is the one the API applies, because
+  <code>RegisterSerializer</code> accepts it and the view above it is admin-only.</figcaption>
+</figure>
+
+<h2>34.6 <code>Profile.jsx</code></h2>
+
+<p>Two separate forms side by side, because they are two different jobs with different rules.</p>
+
+<p><strong>Your details</strong> — first name, last name, email, phone — read from
+<code>GET /profile/</code> rather than from the saved session, which only holds id, username
+and role. Saving is a <code>PATCH</code>. Username and role are shown but not editable, with a
+line saying why.</p>
+
+<p><strong>Change password</strong> — current, new, confirm. On success the page calls
+<code>logOut()</code> and navigates to <code>/login</code>. The old access token stays
+technically valid until it expires, so the honest thing is to end the session here rather than
+pretend it was revoked.</p>
+
+<p>An admin sees one extra line at the bottom: changing somebody else's details, or anybody's
+role, is done from the Django admin site.</p>
+
+<h2>34.7 <code>NotFound.jsx</code></h2>
+
+<p>Sits outside the layout route, so there is no sidebar to escape with — which is what the
+button is for. Where it points depends on whether there is a session: the dashboard needs one,
+the login page does not, and offering the wrong one only bounces you straight back.</p>
+
+<!-- ================= PART V ================= -->
+<div class="part" id="part5"><span class="pnum">Part Five</span><span class="ptitle">How it behaves</span></div>
+<p class="partlede">Four cross-cutting stories that no single file tells: the session, the
+list pipeline, the permission model, and what performance cost what.</p>
+
+<h1 id="ch35">35. The authentication lifecycle</h1>
+
+<h2>35.1 Signing in</h2>
+
+<div class="ascii">POST /api/login/  {"phone": "01700000000", "password": "admin1234"}
+        │
+        ├─ Profile.objects.get(phone=…)      → the User behind it
+        ├─ user.check_password(…)            → 400 "Invalid phone or password" if wrong
+        └─ RefreshToken.for_user(user)       → {access, refresh}
+
+200 {"message":"Login successful", "user_id":1, "username":"demo_admin",
+     "role":"admin", "tokens":{"access":"eyJ…","refresh":"eyJ…"}}
+        │
+AuthContext.logIn():
+   saveSession(data.tokens.access, {id, username, role})
+        │
+   localStorage:  lms_access_token = "eyJ…"
+                  lms_user         = {"id":1,"username":"demo_admin","role":"admin"}</div>
+
+<p>The refresh token is received and thrown away. Nothing in the frontend stores it, because
+there is nothing to exchange it at.</p>
+
+<h2>35.2 While signed in</h2>
+
+<p>Every request through <code>request()</code> attaches
+<code>Authorization: Bearer &lt;access&gt;</code>. The server verifies the signature and the
+expiry — it does <em>not</em> look the token up in a table, which is the whole point of a JWT
+and also the whole limitation.</p>
+
+<h2>35.3 Signing out, three ways</h2>
+
+<table>
+<tr><th>Trigger</th><th>What happens</th><th>Is the token really dead?</th></tr>
+<tr><td>The Log out button</td><td><code>clearSession()</code>, state reset, router redirects</td><td><span class="no">No</span> — it stays valid on the server until it expires</td></tr>
+<tr><td>Any 401 from any request</td><td><code>api.js</code> clears the session and fires <code>lms:unauthorised</code>; the provider drops the user</td><td>Yes — that is what the 401 means</td></tr>
+<tr><td>Changing your password</td><td>Server blacklists every refresh token; the page logs you out and navigates to <code>/login</code></td><td><span class="no">Partly</span> — refresh tokens yes, the live access token no</td></tr>
+</table>
+
+<div class="warn">
+<p>The honest summary: <strong>an access token cannot be revoked in this design.</strong> Up
+to eight hours after a password change, a token copied out of <code>localStorage</code>
+beforehand still works. Shortening <code>ACCESS_TOKEN_LIFETIME</code> and adding a refresh
+endpoint is the standard fix, and it is the single largest change this project would need
+before facing anything real.</p>
+</div>
+
+<h2>35.4 The password reset round trip</h2>
+
+<div class="ascii">/forgot-password  ──POST /api/password-reset/ {"email": "…"}──►  always 200
+                                                                       │
+                                    user found? uid = b64(pk), token = default_token_generator
+                                                                       │
+                     ◄── email (console backend in dev) ───────────────┘
+     http://localhost:5180/reset-password?uid=MQ&token=cvx2p1-…
+
+/reset-password  ──POST /api/password-reset-confirm/ {uid, token, new, confirm}──►
+                                    decode uid → user, check_token (1 hour window),
+                                    validate_password, set_password, blacklist refresh tokens
+                     ◄── 200 ──── navigate to /login with a notice</div>
+
+<p>The one-hour window is <code>PASSWORD_RESET_TIMEOUT</code>. The token also becomes invalid
+as soon as the password changes, because Django's generator hashes the current password into
+it — so a link cannot be replayed.</p>
+
+<h1 id="ch36">36. The list pipeline</h1>
+
+<p class="lead">Four query parameters, four stages, one envelope. Every list endpoint in the
+project behaves identically.</p>
+
+<div class="ascii">GET /api/student/?search=nusrat&is_active=true&ordering=-name&page=2&page_size=25
+
+  queryset = Student.objects.all()
+      │
+  1  SearchFilter        ?search=      → OR of icontains over search_fields
+      │                                  (name, email, roll_number)
+  2  FieldFilterBackend  ?is_active=   → declared in filter_fields, coerced to a bool
+      │
+  3  OrderingFilter      ?ordering=    → checked against ordering_fields; "-" = descending
+      │                                  default ["id"] when absent
+  4  StandardPagination  ?page=        → COUNT(*) for the envelope, then LIMIT/OFFSET
+      │
+  {"count": 214, "page": 2, "page_size": 25, "total_pages": 9,
+   "next": "…?page=3&…", "previous": "…?page=1&…", "results": [ … 25 rows … ]}</div>
+
+<h2>36.1 The rules that fall out of that order</h2>
+
+<ul>
+<li><strong><code>count</code> is post-filter.</strong> It is what the table footer shows and
+what the dashboard tiles read.</li>
+<li><strong>Search and filter compose.</strong> <code>?search=nusrat&amp;is_active=true</code>
+is an AND, not a choice between them.</li>
+<li><strong>Ordering must be stable or paging breaks.</strong> Every view sets
+<code>ordering = ["id"]</code> as its default; without one, a row can appear on two pages or on
+neither.</li>
+<li><strong>An undeclared parameter is silently ignored.</strong> <code>?colour=blue</code> on
+the students list is not an error — it simply is not on the dictionary.</li>
+<li><strong>An empty parameter is the same as an absent one.</strong> <code>?course=</code>
+means "Any", which is why the frontend can send the whole filter object without pruning it
+first.</li>
+</ul>
+
+<h2>36.2 Worked examples</h2>
+
+<pre class="sh"><code>TOKEN=$(curl -s -X POST http://127.0.0.1:8001/api/login/ \
+  -H 'Content-Type: application/json' \
+  -d '{"phone":"01700000000","password":"admin1234"}' \
+  | python3 -c 'import sys,json; print(json.load(sys.stdin)["tokens"]["access"])')
+
+# Assignments due in the next fortnight, soonest first
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://127.0.0.1:8001/api/assignment/?due_from=2026-09-07&due_to=2026-09-21&ordering=due_date"
+
+# The marking backlog, oldest first
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://127.0.0.1:8001/api/submission/?ungraded=true&ordering=submitted_at&page_size=50"
+
+# Everyone who failed a particular assignment
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://127.0.0.1:8001/api/results/?assignment=12&score_max=49&ordering=score"
+
+# How many active students there are, without downloading any of them
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://127.0.0.1:8001/api/student/?is_active=true&page_size=1" | head -c 60</code></pre>
+
+<figure>
+  <img src="screenshots/students-filtered.png" alt="A filtered student list">
+  <figcaption>The same pipeline from the browser: search, two date filters, a status dropdown
+  and a sorted column, all of it done on the server.</figcaption>
+</figure>
+
+<h1 id="ch37">37. The permission matrix</h1>
+
+<p>The complete picture, with the file that enforces each cell.</p>
+
+<table>
+<tr><th>Action</th><th class="center">Anon</th><th class="center">Student</th><th class="center">Teacher</th><th class="center">Admin</th></tr>
+<tr><td><code>POST /login/</code></td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>POST /password-reset/</code>, <code>…-confirm/</code></td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>GET|PATCH /profile/</code></td><td class="center no">401</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>POST /change-password/</code></td><td class="center no">401</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>POST /register/</code></td><td class="center no">401</td><td class="center no">403</td><td class="center no">403</td><td class="center yes">✓</td></tr>
+<tr><td><code>GET</code> any resource list or detail</td><td class="center no">401</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td>Write <code>/teacher/</code>, <code>/student/</code></td><td class="center no">401</td><td class="center no">403</td><td class="center no">403</td><td class="center yes">✓</td></tr>
+<tr><td>Write <code>/course/</code>, <code>/lesson/</code>, <code>/assignment/</code></td><td class="center no">401</td><td class="center no">403</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td>Write <code>/enrollment/</code>, <code>/results/</code></td><td class="center no">401</td><td class="center no">403</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>POST /submission/</code></td><td class="center no">401</td><td class="center yes">✓</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td><code>PUT|PATCH|DELETE /submission/&lt;id&gt;/</code></td><td class="center no">401</td><td class="center no">403</td><td class="center yes">✓</td><td class="center yes">✓</td></tr>
+<tr><td>Change anyone's role</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center">Django admin only</td></tr>
+</table>
+
+<h2>37.1 401 versus 403</h2>
+
+<p>They mean different things and the smoke test asserts on the difference.
+<strong>401</strong> is "I do not know who you are" — no token, or a token the server will not
+accept. <strong>403</strong> is "I know exactly who you are, and no" — a valid token whose role
+is not on the list. If a call that should be 403 comes back 401, the authentication class is
+the problem, not the permission class.</p>
+
+<h2>37.2 Changing the rules</h2>
+
+<p>Three files move together, and in this order:</p>
+
+<ol>
+<li><span class="filepath">backend/backend/permissions.py</span> — the actual rule. Change
+<code>roles_that_may_write</code>, or attach a different class to the view.</li>
+<li><span class="filepath">frontend/src/permissions.js</span> — the mirror, so the buttons
+match.</li>
+<li><span class="filepath">backend/scripts/api_smoke_test.py</span> — the
+<code>writers</code> / <code>creators</code> sets in <code>resource_matrix()</code>, or the
+test will now fail on the new behaviour.</li>
+</ol>
+
+<h1 id="ch38">38. Performance, and what it cost</h1>
+
+<p class="lead">Three decisions, each with a number behind it.</p>
+
+<h2>38.1 <code>select_related</code> on every joining list view</h2>
+
+<p><code>ResultSerializer</code> reaches <code>submission.student.name</code> and
+<code>submission.assignment.title</code>. Without <code>select_related</code>, a ten-row page
+would be 1 query for the results plus 10 for the submissions plus 20 for their students and
+assignments. With it, one query with joins. The six views that touch relations all declare
+it.</p>
+
+<h2>38.2 Counting without downloading</h2>
+
+<p>The dashboard used to fetch all eight tables to display eight numbers — with the current
+data that is more than 13,000 rows on every visit to the home page. Now:</p>
+
+<pre class="js"><code>count: async (params) =&gt; {
+  const body = await request(`/${path}/${toQueryString({ ...params, page_size: 1 })}`);
+  return Array.isArray(body) ? body.length : (body?.count ?? 0);
+}</code></pre>
+
+<p>Eight requests, one row each. The count comes from the pagination envelope, which the
+database was computing anyway.</p>
+
+<h2>38.3 Names on the row instead of joins in the browser</h2>
+
+<p>Before pagination, the browser downloaded every teacher, course and student and did the
+id→name join itself. Two things broke that. A page of ten rows should not cost eight thousand.
+And once the lookup lists were paginated too, <strong>a lookup list cannot answer for a row on
+page 40</strong> — the name simply would not be there. Sending <code>teacher_name</code>
+alongside <code>teacher</code> costs nothing, because the join is already in the queryset.</p>
+
+<p>What is still fetched in full: the dropdown lists, via <code>listAll()</code>. Those are 26
+teachers, 24 courses, 180 students and 180 assignments — small, and needed whole because a
+<code>&lt;select&gt;</code> cannot page.</p>
+
+<h2>38.4 <code>?ungraded=true</code></h2>
+
+<p>The Results page needs the submissions nobody has marked. Computing that in the browser
+means downloading 7,665 submissions and 4,630 results and subtracting one set from the other.
+As a query it is <code>results__isnull=True</code>, and the page asks for the first 200 of
+them.</p>
+
+<h2>38.5 The debounce</h2>
+
+<p>300 ms after the last keystroke, not on every one. Typing a six-letter name is one request
+instead of six — and the <code>isCurrent</code> flag means that even if two are in flight, the
+older answer cannot overwrite the newer one.</p>
+
+<table class="tight">
+<tr><th>Change</th><th>Before</th><th>After</th></tr>
+<tr><td>Opening a table page</td><td>the whole table</td><td>10 rows + a count</td></tr>
+<tr><td>Opening the dashboard</td><td>8 whole tables (~13,800 rows)</td><td>8 requests, 1 row each</td></tr>
+<tr><td>Rendering one row's related name</td><td>a browser-side join over a full lookup list</td><td>a field on the row</td></tr>
+<tr><td>Finding ungraded submissions</td><td>7,665 + 4,630 rows, subtracted in JS</td><td><code>?ungraded=true</code>, 200 rows</td></tr>
+<tr><td>Typing "sarah"</td><td>6 requests</td><td>1</td></tr>
+</table>
+
+<!-- ================= PART VI ================= -->
+<div class="part" id="part6"><span class="pnum">Part Six</span><span class="ptitle">Working on it</span></div>
+<p class="partlede">Three recipes that cover most changes anyone will want to make, then
+testing, troubleshooting, and an honest list of what is not finished.</p>
+
+<h1 id="ch39">39. Recipe — add a field</h1>
+
+<p class="lead">Worked example: give <code>Teacher</code> a <code>joined_on</code> date that
+shows in the table, is editable in the form, and can be sorted on.</p>
+
+<h2>Step 1 — the model</h2>
+
+<pre class="py"><code># backend/backend/models.py
+class Teacher(models.Model):
+    ...
+    joined_on = models.DateField(null=True, blank=True)</code></pre>
+
+<p><code>null=True</code> matters: there are already 26 rows, and a non-nullable date would
+force you to invent a default for all of them.</p>
+
+<h2>Step 2 — the migration</h2>
+
+<pre class="sh"><code>python manage.py makemigrations backend
+python manage.py migrate</code></pre>
+
+<h2>Step 3 — the serializer</h2>
+
+<pre class="py"><code># backend/backend/serializers.py
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['id', 'name', 'email', 'subject', 'is_active', 'joined_on']</code></pre>
+
+<p>The <code>fields</code> list is explicit everywhere in this project, so a new column is
+invisible to the API until it is named here.</p>
+
+<h2>Step 4 — the view, if it should be sortable or searchable</h2>
+
+<pre class="py"><code># backend/backend/views.py — TeacherListCreateView
+ordering_fields = ["id", "name", "email", "subject", "is_active", "joined_on"]</code></pre>
+
+<h2>Step 5 — the page</h2>
+
+<p>Four edits in <span class="filepath">frontend/src/pages/Teachers.jsx</span>:</p>
+
+<pre class="jsx"><code>// 1. state
+const [joinedOn, setJoinedOn] = useState("");
+
+// 2. both form openers
+function openEmptyForm()  { …; setJoinedOn(""); … }
+function openFormForEditing(teacher) { …; setJoinedOn(teacher.joined_on ?? ""); … }
+
+// 3. the payload — PUT sends the whole row, so a missing key clears the column
+const values = { name, email, subject, is_active: isActive, joined_on: joinedOn || null };
+
+// 4. the form control, the column header, and the cell
+&lt;Input label="Joined on" type="date" value={joinedOn}
+       onChange={(e) =&gt; setJoinedOn(e.target.value)} /&gt;
+
+columns={[…, { label: "Joined", field: "joined_on" }, "Action"]}
+&lt;td className="px-3 py-2 text-slate-700"&gt;{teacher.joined_on}&lt;/td&gt;</code></pre>
+
+<div class="warn">
+<p><code>update()</code> is a <code>PUT</code>, not a <code>PATCH</code>. Forgetting to include
+the new key in <code>values</code> will not leave the column alone — it will blank it.</p>
+</div>
+
+<h2>Step 6 — the smoke test, if the field is required</h2>
+
+<p>Add it to the <code>create</code> payload for that resource in
+<code>resource_matrix()</code>, or every create check will start failing with a 400.</p>
+
+<h1 id="ch40">40. Recipe — add a filter</h1>
+
+<p class="lead">Worked example: filter courses by whether their teacher is active.</p>
+
+<h2>Step 1 — declare it on the view</h2>
+
+<pre class="py"><code># backend/backend/views.py — CourseListCreateView
+filter_fields = {
+    "teacher": "teacher",
+    "teacher_active": "teacher__is_active",    # new
+}</code></pre>
+
+<p>That is the entire backend change. <code>FieldFilterBackend</code> walks
+<code>teacher__is_active</code>, finds a <code>BooleanField</code>, and coerces
+<code>"true"</code> to <code>True</code>. Test it immediately:</p>
+
+<pre class="sh"><code>curl -s -H "Authorization: Bearer $TOKEN" \
+  "http://127.0.0.1:8001/api/course/?teacher_active=false"</code></pre>
+
+<h2>Step 2 — add the control</h2>
+
+<pre class="jsx"><code>&lt;Select
+  label="Teacher status"
+  className="min-w-40"
+  value={query.filters.teacher_active ?? ""}
+  onChange={(event) =&gt; query.setFilter("teacher_active", event.target.value)}
+&gt;
+  &lt;option value=""&gt;Any&lt;/option&gt;
+  &lt;option value="true"&gt;Active&lt;/option&gt;
+  &lt;option value="false"&gt;Inactive&lt;/option&gt;
+&lt;/Select&gt;</code></pre>
+
+<p>Drop that inside the page's <code>&lt;FilterBar&gt;</code> as a child. Nothing else is
+needed: <code>setFilter</code> already resets the page to 1, <code>params</code> already picks
+it up, the effect already re-runs, and <code>toQueryString</code> already drops the empty
+"Any" value.</p>
+
+<h2>40.1 Range filters</h2>
+
+<p>Two parameters against one column, and two date inputs:</p>
+
+<pre class="py"><code>"created_from": "created_at__gte",
+"created_to":   "created_at__lte",</code></pre>
+
+<pre class="jsx"><code>&lt;Input label="Created from" type="date" className="min-w-40"
+  value={query.filters.created_from ?? ""}
+  onChange={(e) =&gt; query.setFilter("created_from", e.target.value)} /&gt;</code></pre>
+
+<h1 id="ch41">41. Recipe — add a whole resource</h1>
+
+<p class="lead">Nine files, in order. Worked example: <code>Announcement</code>, belonging to a
+course, writable by teaching staff.</p>
+
+<h3>1. Model — <span class="filepath">backend/backend/models.py</span></h3>
+
+<pre class="py"><code>class Announcement(models.Model):
+    course     = models.ForeignKey(Course, on_delete=models.CASCADE)
+    title      = models.CharField(max_length=100)
+    body       = models.TextField()
+    posted_at  = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title</code></pre>
+
+<h3>2. Migration</h3>
+
+<pre class="sh"><code>python manage.py makemigrations backend &amp;&amp; python manage.py migrate</code></pre>
+
+<h3>3. Serializer — <span class="filepath">serializers.py</span></h3>
+
+<pre class="py"><code>class AnnouncementSerializer(serializers.ModelSerializer):
+    course_title = serializers.CharField(source='course.title', read_only=True)
+
+    class Meta:
+        model = Announcement
+        fields = ['id', 'course', 'title', 'body', 'posted_at', 'course_title']</code></pre>
+
+<p>Send the name beside the id. That is the convention here and it is what keeps the browser
+from having to join.</p>
+
+<h3>4. Views — <span class="filepath">views.py</span></h3>
+
+<pre class="py"><code>class AnnouncementListCreateView(generics.ListCreateAPIView):
+    queryset = Announcement.objects.select_related("course")
+    serializer_class = AnnouncementSerializer
+    permission_classes = [TeachingStaffWrites]
+
+    search_fields   = ["title", "body", "course__title"]
+    filter_fields   = {"course": "course",
+                       "posted_from": "posted_at__gte",
+                       "posted_to":   "posted_at__lte"}
+    ordering_fields = ["id", "title", "posted_at", "course__title"]
+    ordering        = ["id"]
+
+class AnnouncementRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Announcement.objects.all()
+    serializer_class = AnnouncementSerializer
+    permission_classes = [TeachingStaffWrites]      # ← the same class. Do not forget this.</code></pre>
+
+<h3>5. Routes — <span class="filepath">urls.py</span></h3>
+
+<pre class="py"><code>path('announcement/', AnnouncementListCreateView.as_view(), name='announcement-list'),
+path('announcement/&lt;int:pk&gt;/', AnnouncementRetrieveUpdateDestroyAPIView.as_view(),
+     name='announcement-detail'),</code></pre>
+
+<h3>6. Admin — <span class="filepath">admin.py</span></h3>
+
+<pre class="py"><code>@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'course', 'posted_at']
+    list_filter = ['course']
+    search_fields = ['title', 'body']</code></pre>
+
+<h3>7. API client — <span class="filepath">frontend/src/api.js</span></h3>
+
+<pre class="js"><code>export const announcementsApi = resource("announcement");</code></pre>
+
+<h3>8. Permissions mirror — <span class="filepath">frontend/src/permissions.js</span></h3>
+
+<pre class="js"><code>const WRITERS = {
+  ...
+  announcement: [ADMIN, TEACHER],
+};</code></pre>
+
+<h3>9. The page, the route, the menu entry</h3>
+
+<p>Copy <span class="filepath">pages/Lessons.jsx</span> — it is the closest shape: one lookup
+list, one dropdown filter, a title, a description and a foreign key. Rename the eight or so
+identifiers, change the columns, change the form fields. Then:</p>
+
+<pre class="jsx"><code>// App.jsx, inside the layout route
+&lt;Route path="/announcements" element={&lt;Announcements /&gt;} /&gt;
+
+// Sidebar.jsx, in the menu array
+{ address: "/announcements", text: "Announcements", icon: &lt;Megaphone size={16} /&gt; },
+
+// Dashboard.jsx, in tiles
+{ address: "/announcements", text: "Announcements", api: announcementsApi,
+  icon: &lt;Megaphone size={16} className="text-indigo-500" /&gt; },</code></pre>
+
+<h3>10. And the tests</h3>
+
+<p>Add an entry to <code>resource_matrix()</code> in the smoke test with a create payload, an
+update payload and <code>"writers": {"admin", "teacher"}</code>, and add the path to the list
+in <code>check_reads()</code>.</p>
+
+<div class="tip">
+<p>Checklist of the things that are easy to forget: the permission class on the
+<em>detail</em> view; the <code>select_related</code>; the trailing slash in the route; the
+mirror in <code>permissions.js</code>; and the smoke test entry.</p>
+</div>
+
+<h1 id="ch42">42. Testing, linting, screenshots</h1>
+
+<h2>42.1 The smoke test</h2>
+
+<pre class="sh"><code>cd backend
+python manage.py runserver 8001        # terminal one
+python scripts/api_smoke_test.py       # terminal two
+LMS_API=http://127.0.0.1:8002/api python scripts/api_smoke_test.py   # somewhere else</code></pre>
+
+<p>Covered in full in <a href="#ch24">chapter 24</a>. It needs the demo accounts, so run
+<code>seed_data</code> first.</p>
+
+<h2>42.2 Django's own test runner</h2>
+
+<pre class="sh"><code>python manage.py test</code></pre>
+
+<p>Runs, and finds nothing: <code>tests.py</code> is the empty stub. If you add tests there,
+note that Django will try to create a test database, which means the MySQL user needs
+<code>CREATE</code> privileges on <code>test_lms_db</code>.</p>
+
+<h2>42.3 Frontend</h2>
+
+<pre class="sh"><code>cd frontend
+npm run lint      # ESLint 10, flat config
+npm run build     # production bundle into dist/ (gitignored)
+npm run preview   # serve that bundle to check it</code></pre>
+
+<p>There is no frontend test runner. <code>npm run build</code> is the closest thing to a
+check — it fails on a syntax error or a bad import.</p>
+
+<div class="tip">
+<p>Build once before believing anything about the production bundle. Two things behave
+differently there: the login page's demo panel disappears
+(<code>import.meta.env.DEV</code>), and so does the dev-only note on the forgot-password
+page.</p>
+</div>
+
+<h2>42.4 Redrawing the screenshots</h2>
+
+<pre class="sh"><code># both servers up, database seeded
+pip install playwright &amp;&amp; playwright install chromium
+python3 docs/capture_screenshots.py</code></pre>
+
+<p>It drives a real Chromium at 1440×900 (and 390×844 for the two phone shots) at
+<code>device_scale_factor=2</code>, logs in as the admin and then as the student, visits every
+screen, and writes 18 PNGs into <code>docs/screenshots/</code>, overwriting what was there.
+It also listens for page errors and reports any screenshot whose body came out empty — so it
+doubles as a crude end-to-end check.</p>
+
+<p>Note how it fills the login form: <code>input[name="phone_number"]</code>. That name exists
+only because <code>nameFromLabel()</code> derives it from the label text "Phone number".
+Rename that label and this script breaks.</p>
+
+<h1 id="ch43">43. Troubleshooting</h1>
+
+<table>
+<tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+<tr><td><em>"Could not reach the server. Is Django running on http://127.0.0.1:8001?"</em></td><td>Backend down, or on another port</td><td><code>python manage.py runserver 8001</code> — note the port</td></tr>
+<tr><td>CORS error in the browser console</td><td>Your origin is not on the allow list</td><td>Add it to <code>CORS_ALLOWED_ORIGINS</code> and restart Django</td></tr>
+<tr><td><code>Access denied for user 'lms_user'@'localhost'</code></td><td>The grant was made for the wrong host</td><td>Grant to <code>'lms_user'@'127.0.0.1'</code> — MySQL treats the two as different</td></tr>
+<tr><td><code>pip install mysqlclient</code> fails</td><td>Missing MySQL client headers</td><td><code>brew install mysql-client pkg-config</code> / <code>apt install libmysqlclient-dev</code></td></tr>
+<tr><td><code>makemigrations</code> wants to rewrite every primary key</td><td><code>DEFAULT_AUTO_FIELD</code> was removed or changed</td><td>Put <code>BigAutoField</code> back; the columns are already <code>bigint</code></td></tr>
+<tr><td><em>"Only an admin can create accounts."</em></td><td>Signed in as a teacher or student</td><td>Use an admin, or <code>createsuperuser</code></td></tr>
+<tr><td>Signed in but every page is empty and the console shows 401</td><td>The token expired (8 hours)</td><td>Log in again. There is no refresh endpoint.</td></tr>
+<tr><td>Reset email never arrives</td><td>The dev backend prints instead of sending</td><td>Copy the link out of the <code>runserver</code> terminal</td></tr>
+<tr><td>Signed out straight after changing your password</td><td>Deliberate</td><td>Log in with the new password</td></tr>
+<tr><td>Vite says the port is taken</td><td>5180 is busy</td><td>It picks the next free port and prints it — add that origin to CORS</td></tr>
+<tr><td>A dropdown is empty but the table has rows</td><td>The lookup <code>listAll()</code> call failed</td><td>Check the network tab; the error also lands in the page's red banner</td></tr>
+<tr><td>Grading a submission returns 400</td><td>It already has a result — <code>Results.submission</code> is one-to-one</td><td>Edit the existing result instead. The dropdown only offers ungraded ones.</td></tr>
+<tr><td>An admin sees the dashboard instead of <code>/accounts</code></td><td>The role had not arrived yet on a restored session</td><td>Already handled by <code>ProtectedRoute</code>; if it persists, check <code>/profile/</code> returns a role</td></tr>
+<tr><td>The smoke test exits 2 with "Could not sign in"</td><td>The demo accounts do not exist</td><td><code>python manage.py seed_data</code></td></tr>
+</table>
+
+<h1 id="ch44">44. Before it faces the real world</h1>
+
+<p class="lead">This is a development configuration and does not pretend otherwise. Here is
+the full list of what would have to change, in the order it matters.</p>
+
+<table>
+<tr><th>#</th><th>Change</th><th>Where</th></tr>
+<tr><td>1</td><td>Move <code>SECRET_KEY</code> to the environment and rotate it — the committed one is in git history</td><td><code>lms/settings.py</code></td></tr>
+<tr><td>2</td><td><code>DEBUG = False</code>, and set <code>ALLOWED_HOSTS</code> to the real hostname</td><td><code>lms/settings.py</code></td></tr>
+<tr><td>3</td><td>Move the database password out of the defaults — <code>os.getenv</code> is already there, the fallback is the problem</td><td><code>lms/settings.py</code></td></tr>
+<tr><td>4</td><td>Delete every seeded account, especially the three demo logins with published passwords</td><td>database</td></tr>
+<tr><td>5</td><td>Shorten <code>ACCESS_TOKEN_LIFETIME</code> and add a refresh endpoint, so a token can actually be revoked</td><td><code>settings.py</code>, <code>urls.py</code>, <code>api.js</code></td></tr>
+<tr><td>6</td><td>Set <code>CORS_ALLOWED_ORIGINS</code> to the real frontend origin only</td><td><code>lms/settings.py</code></td></tr>
+<tr><td>7</td><td>Serve over HTTPS, and set <code>SECURE_SSL_REDIRECT</code>, <code>SESSION_COOKIE_SECURE</code>, <code>CSRF_COOKIE_SECURE</code>, HSTS</td><td><code>lms/settings.py</code></td></tr>
+<tr><td>8</td><td>Real email: switch <code>EMAIL_BACKEND</code> to SMTP and supply credentials from the environment. Remove the hardcoded address in <code>EMAIL_HOST_USER</code></td><td><code>lms/settings.py</code></td></tr>
+<tr><td>9</td><td>Static files and a real server — <code>collectstatic</code>, gunicorn behind nginx. <code>runserver</code> is not for production</td><td>deployment</td></tr>
+<tr><td>10</td><td>Rate-limit <code>/login/</code> and <code>/password-reset/</code>. Neither has any throttling today</td><td>DRF throttles</td></tr>
+<tr><td>11</td><td>Reconsider the token in <code>localStorage</code> — readable by any script on the origin</td><td><code>api.js</code></td></tr>
+</table>
+
+<div class="warn">
+<p>Items 1 and 4 are the ones that matter most and are easiest to forget. The secret key is
+already public in the repository's history, so rotating it is not optional — changing the file
+without changing the value achieves nothing.</p>
+</div>
+
+<h1 id="ch45">45. Rough edges and known gaps</h1>
+
+<p class="lead">An honest inventory. None of these stop the app working; all of them are worth
+knowing before you build on it.</p>
+
+<h2>45.1 Structural</h2>
+
+<table>
+<tr><th>Gap</th><th>Consequence</th></tr>
+<tr><td><strong>Nothing links <code>Student</code> to <code>User</code></strong></td><td>The server cannot tell whose submission is whose. Hence the odd submission permission, and hence a student being able to <code>POST</code> a submission naming somebody else as its author.</td></tr>
+<tr><td><strong>No unique constraint on <code>Enrollment</code></strong></td><td>The same student can be enrolled on the same course twice. A <code>unique_together</code> would fix it.</td></tr>
+<tr><td><strong><code>Assignment</code> has both a course and a lesson</strong></td><td>Nothing checks that the lesson belongs to the course. The UI narrows the dropdown; the API does not care.</td></tr>
+<tr><td><strong>No <code>Meta.ordering</code> on any model</strong></td><td>Harmless — every list view sets <code>ordering</code> explicitly — but a queryset used anywhere else has no defined order.</td></tr>
+<tr><td><strong>Teacher/Student rows and login accounts are joined by email convention only</strong></td><td>Deleting one leaves the other. The seeder maintains the convention; nothing enforces it.</td></tr>
+</table>
+
+<h2>45.2 Authentication</h2>
+
+<table>
+<tr><th>Gap</th><th>Consequence</th></tr>
+<tr><td><strong>No token refresh endpoint</strong></td><td>The refresh token is issued, handed over and discarded. The access token is widened to 8 hours to compensate.</td></tr>
+<tr><td><strong>No logout endpoint</strong></td><td>Logging out is client-side only. The token stays valid until it expires.</td></tr>
+<tr><td><strong>Access tokens cannot be revoked</strong></td><td>A password change blacklists refresh tokens only. See <a href="#ch35">chapter 35</a>.</td></tr>
+<tr><td><strong>A superuser cannot use the app's login page</strong></td><td>No <code>Profile</code>, so no phone number to sign in with. <code>/admin/</code> only.</td></tr>
+<tr><td><strong>No rate limiting anywhere</strong></td><td><code>/login/</code> can be hammered.</td></tr>
+</table>
+
+<h2>45.3 Testing and tooling</h2>
+
+<table>
+<tr><th>Gap</th><th>Consequence</th></tr>
+<tr><td><strong><code>tests.py</code> is empty</strong></td><td>No unit tests. The smoke test is thorough but needs a running server and a seeded database, so it cannot run in a clean CI job unaided.</td></tr>
+<tr><td><strong><code>requests</code> is not in <code>requirements.txt</code></strong></td><td>The smoke test's only dependency is undeclared.</td></tr>
+<tr><td><strong>No frontend tests</strong></td><td><code>npm run build</code> and the screenshot script are the whole safety net.</td></tr>
+<tr><td><strong><code>no-unused-vars</code> ignores capitalised names</strong></td><td>A genuinely unused component import is never reported.</td></tr>
+<tr><td><strong>No CI configuration</strong></td><td>Nothing runs the lint or the smoke test automatically.</td></tr>
+</table>
+
+<h2>45.4 Small inconsistencies</h2>
+
+<ul>
+<li><code>DEMO_ACCOUNTS</code> is duplicated in <code>seed_data.py</code> and
+<code>Login.jsx</code>, and the two have drifted — the login page offers only the admin.</li>
+<li><code>/submission/</code> is singular, <code>/results/</code> is plural.</li>
+<li>The model is <code>Results</code> (plural) but the serializer is
+<code>ResultSerializer</code> (singular).</li>
+<li>The detail views have no <code>select_related</code> while their list views do.</li>
+<li><code>backend/backend/urls.py</code> gives names to the resource routes but the two
+password-reset paths have none.</li>
+<li><code>blacklist_user_tokens()</code> swallows every exception silently, so a broken
+blacklist app would never be noticed.</li>
+<li>The frontend never uses <code>PATCH</code> for resources — always <code>PUT</code> with
+the full row — even though the API supports both.</li>
+<li>There is a <code>frontend/dist/</code> directory on disk from an earlier build; it is
+gitignored and not tracked.</li>
+</ul>
+
+<div class="note">
+<p>None of the above is a bug in the sense of "this does not work". They are the places where
+the next person will be surprised, which is what this chapter is for.</p>
+</div>
+
+<!-- ================= APPENDICES ================= -->
+<div class="part" id="appa"><span class="pnum">Appendices</span><span class="ptitle">Reference</span></div>
+<p class="partlede">The API surface, every file with its size, and the vocabulary this
+codebase uses.</p>
+
+<h1 id="appa-inner" class="cont">A. API reference</h1>
+
+<p>Base URL <code>http://127.0.0.1:8001/api</code>. Every endpoint except the three public
+ones requires <code>Authorization: Bearer &lt;access token&gt;</code>.</p>
+
+<h2>A.1 Accounts</h2>
+
+<table>
+<tr><th>Method</th><th>Path</th><th>Who</th><th>Body / result</th></tr>
+<tr><td>POST</td><td><code>/login/</code></td><td>public</td><td><code>{phone, password}</code> → <code>{message, user_id, username, role, tokens:{access, refresh}}</code></td></tr>
+<tr><td>POST</td><td><code>/register/</code></td><td><strong>admin</strong></td><td><code>{username, email, password, phone, first_name, last_name?, role?}</code> → 201 with the created user</td></tr>
+<tr><td>GET</td><td><code>/profile/</code></td><td>signed in</td><td>→ <code>{message, user:{user_id, username, email, first_name, last_name, phone, role}}</code></td></tr>
+<tr><td>PATCH</td><td><code>/profile/</code></td><td>signed in</td><td><code>{first_name?, last_name?, email?, phone?}</code>. <code>role</code> and <code>username</code> are ignored.</td></tr>
+<tr><td>POST</td><td><code>/change-password/</code></td><td>signed in</td><td><code>{current_password, new_password, confirm_password}</code> → 200, and every refresh token is blacklisted</td></tr>
+<tr><td>POST</td><td><code>/password-reset/</code></td><td>public</td><td><code>{email}</code> → always 200</td></tr>
+<tr><td>POST</td><td><code>/password-reset-confirm/</code></td><td>public</td><td><code>{uid, token, new_password, confirm_password}</code></td></tr>
+</table>
+
+<h2>A.2 Resources</h2>
+
+<p>Every one has the same two routes:</p>
+
+<pre class="http"><code>GET  /api/&lt;resource&gt;/            list, paginated and filtered
+POST /api/&lt;resource&gt;/            create
+
+GET    /api/&lt;resource&gt;/&lt;id&gt;/     one row
+PUT    /api/&lt;resource&gt;/&lt;id&gt;/     replace
+PATCH  /api/&lt;resource&gt;/&lt;id&gt;/     partial update
+DELETE /api/&lt;resource&gt;/&lt;id&gt;/     204 on success</code></pre>
+
+<table>
+<tr><th>Resource</th><th>Path</th><th>Fields sent</th><th>Writable by</th></tr>
+<tr><td>Teachers</td><td><code>/teacher/</code></td><td>id, name, email, subject, is_active</td><td>admin</td></tr>
+<tr><td>Students</td><td><code>/student/</code></td><td>id, name, email, enrollment_date, is_active, roll_number</td><td>admin</td></tr>
+<tr><td>Courses</td><td><code>/course/</code></td><td>id, title, description, teacher, <em>teacher_name</em></td><td>admin, teacher</td></tr>
+<tr><td>Enrollments</td><td><code>/enrollment/</code></td><td>id, student, course, enrollment_date, <em>student_name</em>, <em>course_title</em></td><td>admin, teacher</td></tr>
+<tr><td>Lessons</td><td><code>/lesson/</code></td><td>id, title, description, course, <em>course_title</em></td><td>admin, teacher</td></tr>
+<tr><td>Assignments</td><td><code>/assignment/</code></td><td>id, title, description, lesson, due_date, course, <em>course_title</em>, <em>lesson_title</em></td><td>admin, teacher</td></tr>
+<tr><td>Submissions</td><td><code>/submission/</code></td><td>id, assignment, student, submitted_at, content, <em>student_name</em>, <em>assignment_title</em></td><td>admin, teacher; students may POST</td></tr>
+<tr><td>Results</td><td><code>/results/</code></td><td>id, submission, score, feedback, <em>student_name</em>, <em>assignment_title</em></td><td>admin, teacher</td></tr>
+</table>
+
+<p class="small"><em>Italic</em> fields are read-only and computed from a relation.
+<code>enrollment_date</code> on an enrollment and <code>submitted_at</code> on a submission are
+<code>auto_now_add</code> and cannot be supplied.</p>
+
+<h2>A.3 Query parameters</h2>
+
+<p>Accepted by every list route:</p>
+
+<table class="tight">
+<tr><th>Parameter</th><th>Example</th><th>Meaning</th></tr>
+<tr><td><code>search</code></td><td><code>?search=nusrat</code></td><td>Case-insensitive contains, OR'd over that view's <code>search_fields</code></td></tr>
+<tr><td><code>ordering</code></td><td><code>?ordering=-due_date</code></td><td>Sort. Leading <code>-</code> is descending. Must be on <code>ordering_fields</code>.</td></tr>
+<tr><td><code>page</code></td><td><code>?page=3</code></td><td>Past the end → 404 "Invalid page"</td></tr>
+<tr><td><code>page_size</code></td><td><code>?page_size=50</code></td><td>Default 10, capped at 200</td></tr>
+</table>
+
+<p>Plus the filters each view declares:</p>
+
+<table class="tight">
+<tr><th>Resource</th><th>Filter parameters</th><th>ORM lookup</th></tr>
+<tr><td>Teachers</td><td><code>is_active</code>, <code>subject</code></td><td><code>is_active</code>, <code>subject__icontains</code></td></tr>
+<tr><td>Students</td><td><code>is_active</code>, <code>enrolled_from</code>, <code>enrolled_to</code></td><td><code>is_active</code>, <code>enrollment_date__gte/__lte</code></td></tr>
+<tr><td>Courses</td><td><code>teacher</code></td><td><code>teacher</code></td></tr>
+<tr><td>Lessons</td><td><code>course</code></td><td><code>course</code></td></tr>
+<tr><td>Enrollments</td><td><code>student</code>, <code>course</code>, <code>enrolled_from</code>, <code>enrolled_to</code></td><td><code>student</code>, <code>course</code>, <code>enrollment_date__gte/__lte</code></td></tr>
+<tr><td>Assignments</td><td><code>course</code>, <code>lesson</code>, <code>due_from</code>, <code>due_to</code></td><td><code>course</code>, <code>lesson</code>, <code>due_date__gte/__lte</code></td></tr>
+<tr><td>Submissions</td><td><code>assignment</code>, <code>student</code>, <code>course</code>, <code>submitted_from</code>, <code>submitted_to</code>, <code>ungraded</code></td><td>…, <code>assignment__course</code>, <code>submitted_at__gte/__lte</code>, <code>results__isnull</code></td></tr>
+<tr><td>Results</td><td><code>submission</code>, <code>student</code>, <code>assignment</code>, <code>score_min</code>, <code>score_max</code></td><td><code>submission</code>, <code>submission__student</code>, <code>submission__assignment</code>, <code>score__gte/__lte</code></td></tr>
+</table>
+
+<h2>A.4 The list envelope</h2>
+
+<pre class="json"><code>GET /api/student/?search=nusrat&amp;is_active=true&amp;ordering=name&amp;page=2
+
+{
+  "count": 214,
+  "page": 2,
+  "page_size": 10,
+  "total_pages": 22,
+  "next": "http://127.0.0.1:8001/api/student/?page=3&amp;...",
+  "previous": "http://127.0.0.1:8001/api/student/?page=1&amp;...",
+  "results": [ { "id": 11, "name": "Nusrat Jahan", "...": "..." } ]
+}</code></pre>
+
+<h2>A.5 Status codes you will see</h2>
+
+<table class="tight">
+<tr><th>Code</th><th>Means</th></tr>
+<tr><td>200</td><td>Read, update, or a deliberately vague success (password reset request)</td></tr>
+<tr><td>201</td><td>Created</td></tr>
+<tr><td>204</td><td>Deleted — no body</td></tr>
+<tr><td>400</td><td>Validation. Body is either <code>{"field": ["..."]}</code> or <code>{"error": "..."}</code></td></tr>
+<tr><td>401</td><td>No token, or a token the server will not accept</td></tr>
+<tr><td>403</td><td>Valid token, wrong role. Body is <code>{"detail": "&lt;the permission class's message&gt;"}</code></td></tr>
+<tr><td>404</td><td>No such row, or a page past the end of a list</td></tr>
+</table>
+
+<h1 id="appb">B. File index</h1>
+
+<p>Every source file, with its size, in the order this book covers them.</p>
+
+<table class="tight">
+<tr><th>File</th><th class="center">Lines</th><th>Covered in</th></tr>
+<tr><td colspan="3"><strong>backend/</strong></td></tr>
+<tr><td><code>manage.py</code></td><td class="center">22</td><td>13.1</td></tr>
+<tr><td><code>requirements.txt</code></td><td class="center">6</td><td>2.1</td></tr>
+<tr><td><code>lms/settings.py</code></td><td class="center">~190</td><td>13.4</td></tr>
+<tr><td><code>lms/urls.py</code></td><td class="center">22</td><td>13.2</td></tr>
+<tr><td><code>lms/wsgi.py</code>, <code>lms/asgi.py</code></td><td class="center">16 each</td><td>13.3</td></tr>
+<tr><td><code>backend/models.py</code></td><td class="center">~100</td><td>14</td></tr>
+<tr><td><code>backend/serializers.py</code></td><td class="center">~290</td><td>15</td></tr>
+<tr><td><code>backend/permissions.py</code></td><td class="center">~95</td><td>16</td></tr>
+<tr><td><code>backend/filters.py</code></td><td class="center">~135</td><td>17</td></tr>
+<tr><td><code>backend/pagination.py</code></td><td class="center">~40</td><td>18</td></tr>
+<tr><td><code>backend/views.py</code></td><td class="center">~380</td><td>19</td></tr>
+<tr><td><code>backend/urls.py</code></td><td class="center">~45</td><td>20</td></tr>
+<tr><td><code>backend/admin.py</code></td><td class="center">~75</td><td>21</td></tr>
+<tr><td><code>backend/tests.py</code></td><td class="center">3</td><td>45.3</td></tr>
+<tr><td><code>backend/migrations/*.py</code></td><td class="center">4 files</td><td>22</td></tr>
+<tr><td><code>backend/seed_catalog.py</code></td><td class="center">470</td><td>23.1</td></tr>
+<tr><td><code>backend/management/commands/seed_data.py</code></td><td class="center">488</td><td>23</td></tr>
+<tr><td><code>scripts/api_smoke_test.py</code></td><td class="center">487</td><td>24</td></tr>
+<tr><td colspan="3"><strong>frontend/src/</strong></td></tr>
+<tr><td><code>main.jsx</code></td><td class="center">14</td><td>25.2</td></tr>
+<tr><td><code>index.css</code></td><td class="center">1</td><td>25.3</td></tr>
+<tr><td><code>api.js</code></td><td class="center">~280</td><td>26</td></tr>
+<tr><td><code>auth.js</code></td><td class="center">15</td><td>27</td></tr>
+<tr><td><code>AuthContext.jsx</code></td><td class="center">~95</td><td>27</td></tr>
+<tr><td><code>permissions.js</code></td><td class="center">~45</td><td>28</td></tr>
+<tr><td><code>useTableQuery.js</code></td><td class="center">~135</td><td>29</td></tr>
+<tr><td><code>App.jsx</code></td><td class="center">~70</td><td>30</td></tr>
+<tr><td><code>Sidebar.jsx</code></td><td class="center">~290</td><td>31</td></tr>
+<tr><td><code>components/</code> (13 files)</td><td class="center">685</td><td>32</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Pagination.jsx</code></td><td class="center">134</td><td>32.5</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Table.jsx</code></td><td class="center">104</td><td>32.4</td></tr>
+<tr><td>&nbsp;&nbsp;<code>ConfirmDialog.jsx</code></td><td class="center">80</td><td>32.2</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Input.jsx</code></td><td class="center">66</td><td>32.3</td></tr>
+<tr><td>&nbsp;&nbsp;<code>FilterBar.jsx</code></td><td class="center">60</td><td>32.2</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Alert.jsx</code></td><td class="center">53</td><td>32.2</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Select</code>, <code>ProtectedRoute</code>, <code>Textarea</code>, <code>Button</code>, <code>Checkbox</code>, <code>field.js</code>, <code>IconButton</code>, <code>index.js</code>, <code>PageHeader</code>, <code>styles.js</code></td><td class="center">4–31</td><td>32</td></tr>
+<tr><td><code>pages/</code> (15 files)</td><td class="center">4,408</td><td>33, 34</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Assignments.jsx</code></td><td class="center">504</td><td>33.7</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Submissions.jsx</code></td><td class="center">493</td><td>33.7</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Results.jsx</code></td><td class="center">490</td><td>33.7</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Students.jsx</code></td><td class="center">421</td><td>33</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Enrollments.jsx</code></td><td class="center">414</td><td>33</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Lessons.jsx</code></td><td class="center">372</td><td>33</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Courses.jsx</code></td><td class="center">371</td><td>33</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Teachers.jsx</code></td><td class="center">367</td><td>33</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Profile.jsx</code></td><td class="center">242</td><td>34.6</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Accounts.jsx</code></td><td class="center">171</td><td>34.5</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Login.jsx</code></td><td class="center">154</td><td>34.2</td></tr>
+<tr><td>&nbsp;&nbsp;<code>Dashboard.jsx</code></td><td class="center">143</td><td>34.1</td></tr>
+<tr><td>&nbsp;&nbsp;<code>ResetPassword.jsx</code></td><td class="center">121</td><td>34.4</td></tr>
+<tr><td>&nbsp;&nbsp;<code>ForgotPassword.jsx</code></td><td class="center">111</td><td>34.3</td></tr>
+<tr><td>&nbsp;&nbsp;<code>NotFound.jsx</code></td><td class="center">34</td><td>34.7</td></tr>
+<tr><td colspan="3"><strong>docs/</strong></td></tr>
+<tr><td><code>capture_screenshots.py</code></td><td class="center">~180</td><td>42.4</td></tr>
+</table>
+
+<h1 id="appc">C. Glossary</h1>
+
+<table>
+<tr><th>Term</th><th>In this project it means</th></tr>
+<tr><td><strong>the app</strong></td><td><span class="filepath">backend/backend/</span> — the single Django app. Not the React application, and not the <code>lms/</code> project package.</td></tr>
+<tr><td><strong>role</strong></td><td>One of <code>admin</code>, <code>teacher</code>, <code>student</code>, stored on <code>Profile.role</code>. A superuser counts as admin without having one.</td></tr>
+<tr><td><strong>the envelope</strong></td><td>The <code>{count, page, page_size, total_pages, next, previous, results}</code> object every list endpoint returns.</td></tr>
+<tr><td><strong><code>filter_fields</code></strong></td><td>A view attribute: <code>{query parameter: ORM lookup}</code>. Read by <code>FieldFilterBackend</code>. Undeclared parameters are ignored.</td></tr>
+<tr><td><strong><code>listAll</code></strong></td><td>The <code>api.js</code> call that walks every page and returns just the rows. For dropdowns, never for tables.</td></tr>
+<tr><td><strong>lookup list</strong></td><td>A full list of one resource held in a page's state purely to populate a <code>&lt;select&gt;</code>.</td></tr>
+<tr><td><strong>the six steps</strong></td><td>The shape every resource page follows: state, load effect, reload, save, delete, JSX.</td></tr>
+<tr><td><strong><code>dice()</code></strong></td><td>The seeder's stable pseudo-random helper — <code>crc32</code> of the inputs, mod 100. What makes re-seeding a no-op.</td></tr>
+<tr><td><strong>demo accounts</strong></td><td>The three seeded logins on <code>01700000000-2</code>. Repaired on every seed run.</td></tr>
+<tr><td><strong>the mirror</strong></td><td><span class="filepath">frontend/src/permissions.js</span> — a copy of the backend rules used only to decide which buttons to draw.</td></tr>
+<tr><td><strong>ungraded</strong></td><td>A submission with no <code>Results</code> row pointing at it. Expressed as <code>?ungraded=true</code> → <code>results__isnull=True</code>.</td></tr>
+<tr><td><strong><code>stepBackAfter</code></strong></td><td>The hook helper that turns a 404 "Invalid page" into a move to the previous page.</td></tr>
+<tr><td><strong>the smoke test</strong></td><td><span class="filepath">backend/scripts/api_smoke_test.py</span>. Not a unit test suite — it needs a running server and seeded data.</td></tr>
+</table>
+
+<div class="note">
+<p><strong>Regenerating this book.</strong> The source is
+<span class="filepath">docs/guidebook.html</span>. Rebuild the PDF with:</p>
+<pre class="sh"><code>python3 -m venv /tmp/pdfenv &amp;&amp; /tmp/pdfenv/bin/pip install weasyprint
+/tmp/pdfenv/bin/weasyprint docs/guidebook.html docs/LMS-Guidebook.pdf</code></pre>
+<p>Screenshots are referenced relatively, so the HTML must stay in <code>docs/</code>.</p>
+</div>
+
+</body>
+</html>
